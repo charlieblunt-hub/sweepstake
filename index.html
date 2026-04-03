@@ -170,6 +170,7 @@ footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);font-fam
 </div>
 
 <div class="podium-ov" id="podium-ov">
+  <canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:999;"></canvas>
   <div class="podium-title">🏆 SWEEPSTAKE FINAL RESULTS</div>
   <div class="podium-main" id="podium-winner-name">-</div>
   <div class="podium-sub" id="podium-winner-prize">Wins the sweepstake!</div>
@@ -527,35 +528,73 @@ function showPodium(res){
   document.getElementById("podium-winner-name").textContent=res[0].per;
   document.getElementById("podium-winner-prize").textContent=fmt(res[0].tot)+" — Sweepstake Winner!";
 
-  // Build podium stage — 2nd, 1st, 3rd order for visual effect
   const order=[{idx:1,cls:"p2",medal:"🥈"},{idx:0,cls:"p1",medal:"🥇"},{idx:2,cls:"p3",medal:"🥉"}];
-  let stage="";
+  var stage="";
   order.forEach(function(o){
     const r=res[o.idx];
     if(!r)return;
-    stage+='<div class="podium-col">'+
-      '<div class="podium-name">'+r.per+'</div>'+
-      '<div class="podium-prize">'+fmt(r.tot)+'</div>'+
-      '<div class="podium-block '+o.cls+'">'+o.medal+'</div>'+
-    '</div>';
+    stage+='<div class="podium-col"><div class="podium-name">'+r.per+'</div><div class="podium-prize">'+fmt(r.tot)+'</div><div class="podium-block '+o.cls+'">'+o.medal+'</div></div>';
   });
   document.getElementById("podium-stage").innerHTML=stage;
 
-  // Remaining places
-  let rest="";
-  for(let i=3;i<res.length;i++){
+  var rest="";
+  for(var i=3;i<res.length;i++){
     const isLast=i===res.length-1;
-    rest+='<div class="podium-row">'+
-      '<span class="podium-rank'+(isLast?' podium-spoon':'')+'">'+
-        (isLast?'🥄':(i+1)+'th')+
-      '</span>'+
-      '<span class="podium-pname">'+res[i].per+'</span>'+
-      '<span class="podium-pprice">'+fmt(res[i].tot)+'</span>'+
-    '</div>';
+    rest+='<div class="podium-row"><span class="podium-rank'+(isLast?" podium-spoon":"")+'">'+( isLast?"🥄":(i+1)+"th")+'</span><span class="podium-pname">'+res[i].per+'</span><span class="podium-pprice">'+fmt(res[i].tot)+'</span></div>';
   }
   document.getElementById("podium-rest").innerHTML=rest;
   document.getElementById("podium-ov").classList.add("show");
+
+  // Confetti
+  launchConfetti();
 }
+
+function launchConfetti(){
+  const canvas=document.getElementById("confetti-canvas");
+  if(!canvas)return;
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  const COLORS=["#ffd600","#00c853","#ff7043","#40c4ff","#ea80fc","#ff4081","#69f0ae","#ffab40","#fff"];
+  const pieces=[];
+  for(var i=0;i<200;i++){
+    pieces.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*-canvas.height,
+      r:Math.random()*6+3,
+      color:COLORS[Math.floor(Math.random()*COLORS.length)],
+      vx:(Math.random()-0.5)*3,
+      vy:Math.random()*4+2,
+      rot:Math.random()*360,
+      rotV:(Math.random()-0.5)*8,
+      shape:Math.random()>0.5?"rect":"circle"
+    });
+  }
+  var frame=0;
+  function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    var alive=false;
+    pieces.forEach(function(p){
+      if(p.y>canvas.height+20)return;
+      alive=true;
+      p.x+=p.vx;p.y+=p.vy;p.vy+=0.06;p.rot+=p.rotV;p.vx*=0.99;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.globalAlpha=Math.max(0,1-(p.y/canvas.height)*0.7);
+      ctx.fillStyle=p.color;
+      if(p.shape==="rect"){ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);}
+      else{ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fill();}
+      ctx.restore();
+    });
+    frame++;
+    if(alive&&frame<500)requestAnimationFrame(loop);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  requestAnimationFrame(loop);
+}
+
+
 function tog(i){document.getElementById("c"+i).classList.toggle("open");}
 
 (function(){
