@@ -202,12 +202,13 @@ footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);font-fam
 
 <script>
 const DATA_URL="/.netlify/functions/scores";
+const HISTORY_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQUfEX2OQArn_QYaSDpOnTa528zmvicVZqZ283QUnNaLfp7YTz3tyQ3IEHM9-vup5tP78Q-V7aaUQ5j/pub?gid=651734399&single=true&output=csv";
 const PICKS={"Joe Blunt":["Tommy Fleetwood","Tony Finau","Russell Henley","Jordan Spieth","Ludvig Aberg"],"Stephen Mills":["Mark Hubbard","Davis Thompson","Will Zalatoris","Brian Harman","Rickie Fowler"],"Andrew Docwra":["Robert MacIntyre","Sam Ryder","Andrew Putnam","Nick Taylor","Maverick McNealy"],"Linden Grubb":["Steven Fisk","JJ Spaun","Denny McCarthy","Doc Redman","Adam Schenk"],"Charlie Blunt":["Christiaan Lamprecht","Kevin Streelman","Sahith Theegala","Taylor Moore","Harris English"],"Matt Harding-Smith":["Wyndham Clark","Sepp Straka","Keith Mitchell","Beau Hossler","Dylan Wu"],"Mario Zakakiotis":["Cameron Young","Ben Griffin","Austin Smotherman","Patrick Rodgers","Tom Hoge"],"Dom Hunt":["Akshay Bhatia","Ryan Brehm","Luke Clanton","Chris Gotterup","Alex Smalley"],"Tommy North":["Peter Malnati","Justin Lower","Michael Kim","Scott Stallings","James Hahn"],"Max Maciver":["Aaron Rai","Ben Taylor","Brendon Todd","Matt Kuchar","Stephan Jaeger"],"Test Player 1":["Alex Smalley","Tommy Fleetwood","Mark Hubbard","Robert MacIntyre","Steven Fisk"],"Test Player 2":["Davis Thompson","Andrew Putnam","Will Zalatoris","Sam Ryder","Tony Finau"],"Test Player 3":["Christiaan Lamprecht","Jordan Spieth","Maverick McNealy","JJ Spaun","Cameron Young"],"Test Player 4":["Alex Smalley","Wyndham Clark","Sahith Theegala","Nick Taylor","Akshay Bhatia"],"Test Player 5":["Mark Hubbard","Steven Fisk","Ben Griffin","Sepp Straka","Tom Hoge"],"Test Player 6":["Robert MacIntyre","Tommy Fleetwood","Russell Henley","Davis Thompson","Austin Smotherman"],"Test Player 7":["Andrew Putnam","Kevin Streelman","Rickie Fowler","Chris Gotterup","Aaron Rai"],"Test Player 8":["Tony Finau","Sam Ryder","Ludvig Aberg","Denny McCarthy","Stephan Jaeger"],"Test Player 9":["Will Zalatoris","Alex Smalley","Brian Harman","Cameron Young","Keith Mitchell"],"Test Player 10":["Mark Hubbard","Robert MacIntyre","Tommy Fleetwood","Steven Fisk","Andrew Putnam"]};
 const PM={1:1764000,2:1068200,3:676200,4:480200,5:401800,6:355250,7:330750,8:306250,9:286650,10:267050,11:247450,12:227850,13:208250,14:188650,15:178850,16:169050,17:159250,18:149450,19:139650,20:129850,21:120050,22:110250,23:102410,24:94570,25:86730,26:78890,27:75950,28:73010,29:70070,30:67130,31:64190,32:61250,33:58310,34:55860,35:53410,36:50960,37:48510,38:46550,39:44590,40:42630,41:40670,42:38710,43:36750,44:34790,45:32830,46:30870,47:28910,48:27342,49:25970,50:25186,51:24598,52:24010,53:23618,54:23226,55:23030,56:22834,57:22638,58:22442,59:22246,60:22050,61:21854,62:21658,63:21462,64:21266,65:21070};
 const COLORS=["#00c853","#ffd600","#ff7043","#40c4ff","#ea80fc","#69f0ae","#ff6e40","#b388ff","#84ffff","#ccff90","#ff80ab","#ffd740","#80d8ff","#a7ffeb","#ffe57f","#ff9e80","#cfd8dc","#b2dfdb","#f8bbd0","#c5cae9"];
 const p2p={};
 Object.entries(PICKS).forEach(([p,pks])=>pks.forEach(n=>{const k=n.toLowerCase();if(!p2p[k])p2p[k]=[];p2p[k].push(p);}));
-let players=[],prevRanks={},curRanks={},history=[],tournDone=false,currentRoundNum=1,roundSnapshots={},prevScores={};
+let players=[],prevRanks={},curRanks={},history=[],tournDone=false,currentRoundNum=1,roundSnapshots={},prevScores={},sheetHistory=null;
 
 
 function show(id){
@@ -264,6 +265,20 @@ function loadRoundSnapshots(){
       const raw=localStorage.getItem("swp_snap_r"+r);
       if(raw)roundSnapshots.push(JSON.parse(raw));
     }catch(e){}
+  }
+}
+
+async function loadHistory(){
+  try{
+    const resp=await fetch("/.netlify/functions/history?t="+Date.now());
+    if(!resp.ok)return;
+    const data=await resp.json();
+    if(data.rows&&data.rows.length>0){
+      sheetHistory=data;
+      console.log("Loaded "+data.rows.length+" history rows");
+    }
+  }catch(e){
+    console.log("History load failed:",e.message);
   }
 }
 
@@ -411,14 +426,35 @@ function renderStats(){
     html+="</div>";
   }
   html+='<div class="panel"><div class="panel-title">📊 Round by Round</div>';
-  // Build chart data from round snapshots + current
+  // Build chart data — prefer sheet history, fall back to localStorage snapshots
   const chartData=[];
-  roundSnapshots.forEach(function(s){chartData.push(s);});
-  // Add current live snapshot if it differs from last saved round
-  const lastSnap=roundSnapshots.length?roundSnapshots[roundSnapshots.length-1]:null;
   const currTotals={};res.forEach(function(r){currTotals[r.per]=r.tot;});
-  if(!lastSnap||JSON.stringify(lastSnap.totals)!==JSON.stringify(currTotals)){
-    chartData.push({label:"Live",totals:currTotals});
+
+  if(sheetHistory&&sheetHistory.rows&&sheetHistory.rows.length>0){
+    // Use sheet history — thin to max 20 evenly spaced points + latest
+    const rows=sheetHistory.rows;
+    const step=Math.max(1,Math.floor(rows.length/20));
+    // Always include first row
+    const thinned=[rows[0]];
+    for(let i=step;i<rows.length-1;i+=step)thinned.push(rows[i]);
+    // Always include last row
+    if(rows.length>1)thinned.push(rows[rows.length-1]);
+    thinned.forEach(function(row){
+      const d=new Date(row.timestamp);
+      const label="R"+row.round+" "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+      chartData.push({label,totals:row.totals});
+    });
+    // Add live current point if different from last
+    const last=rows[rows.length-1];
+    const changed=Object.keys(currTotals).some(function(k){return currTotals[k]!==(last.totals[k]||0);});
+    if(changed)chartData.push({label:"Live",totals:currTotals});
+  } else {
+    // Fall back to localStorage snapshots
+    roundSnapshots.forEach(function(s){chartData.push(s);});
+    const lastSnap=roundSnapshots.length?roundSnapshots[roundSnapshots.length-1]:null;
+    if(!lastSnap||JSON.stringify(lastSnap.totals)!==JSON.stringify(currTotals)){
+      chartData.push({label:"Live",totals:currTotals});
+    }
   }
 
   if(chartData.length<2){
@@ -533,9 +569,11 @@ function tog(i){document.getElementById("c"+i).classList.toggle("open");}
   else hint.innerHTML='📱 <strong style="color:#e8eaf0">Add to your home screen!</strong><br>Tap the <strong style="color:#e8eaf0">three dots menu</strong> then <strong style="color:#e8eaf0">"Add to Home Screen"</strong>';
 })();
 
+loadHistory();
 loadRoundSnapshots();
 loadData();
 setInterval(loadData,60000);
+setInterval(loadHistory,300000);
 </script>
 </body>
 </html>
