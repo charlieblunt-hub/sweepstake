@@ -6,335 +6,442 @@
 <title>⛳ Valero 2026 Sweepstake</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--green:#00c853;--gold:#ffd600;--silver:#b0bec5;--bronze:#ff7043;--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2235;--card:#161d2e;--border:rgba(255,255,255,0.07);--text:#e8eaf0;--muted:#6b7a99;--red:#ff4444;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,200,83,0.07) 0%,transparent 60%);pointer-events:none;z-index:0;}
-  .wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding-bottom:40px;}
-  header{background:linear-gradient(180deg,#0d1520 0%,var(--bg) 100%);padding:20px 16px 12px;text-align:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);}
-  .tour-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:3px;}
-  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,8vw,40px);letter-spacing:2px;line-height:1;color:#fff;margin-bottom:5px;}
-  h1 span{color:var(--green);}
-  .purse{display:inline-flex;align-items:center;gap:5px;background:rgba(0,200,83,0.1);border:1px solid rgba(0,200,83,0.25);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:var(--green);margin-bottom:8px;}
-  .stbar{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;}
-  .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.4)}}
-  .tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:107px;z-index:99;}
-  .tab{flex:1;padding:11px 8px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;}
-  .tab.on{color:var(--green);border-bottom-color:var(--green);}
-  .sec{display:none;padding:14px;}
-  .sec.on{display:block;}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:9px;overflow:hidden;animation:slideUp 0.35s ease both;}
-  @keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-  .card:nth-child(2){animation-delay:.05s}.card:nth-child(3){animation-delay:.1s}.card:nth-child(4){animation-delay:.15s}
-  .card.r1{border-color:rgba(255,214,0,0.4);background:linear-gradient(135deg,#1a1600 0%,var(--card) 40%);}
-  .card.r2{border-color:rgba(176,190,197,0.25);}
-  .card.r3{border-color:rgba(255,112,67,0.25);}
-  .ctop{display:flex;align-items:center;padding:13px 15px;gap:11px;cursor:pointer;}
-  .mring{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-  .mring.gold{background:rgba(255,214,0,0.15);border:2px solid rgba(255,214,0,0.4);}
-  .mring.silver{background:rgba(176,190,197,0.1);border:2px solid rgba(176,190,197,0.3);}
-  .mring.bronze{background:rgba(255,112,67,0.1);border:2px solid rgba(255,112,67,0.3);}
-  .mring.other{background:rgba(255,255,255,0.04);border:2px solid var(--border);font-family:'Bebas Neue';font-size:14px;color:var(--muted);}
-  .cinfo{flex:1;min-width:0;}
-  .cname{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;}
-  .r1 .cname{color:var(--gold);}
-  .csub{font-size:11px;color:var(--muted);margin-top:1px;font-family:'Barlow Condensed',sans-serif;}
-  .ctotal{text-align:right;}
-  .camount{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:1px;color:var(--green);line-height:1;}
-  .r1 .camount{color:var(--gold);font-size:24px;}
-  .clabel{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;}
-  .chev{color:var(--muted);font-size:14px;transition:transform 0.2s;margin-left:3px;}
-  .card.open .chev{transform:rotate(180deg);}
-  .gbar{height:3px;background:var(--bg3);margin:0 15px 10px;}
-  .gfill{height:100%;background:linear-gradient(90deg,var(--green),#69f0ae);transition:width .7s ease;}
-  .prows{display:none;padding:0 15px 13px;gap:5px;flex-direction:column;}
-  .card.open .prows{display:flex;}
-  .prow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.04);border-radius:8px;padding:7px 11px;gap:8px;}
-  .pleft{display:flex;align-items:center;gap:8px;flex:1;min-width:0;}
-  .ppos{font-family:'Bebas Neue',sans-serif;font-size:15px;min-width:30px;text-align:center;color:var(--green);}
-  .ppos.cut{color:var(--red);font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
-  .ppos.unk{color:var(--muted);}
-  .pname{font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#cdd5e0;}
-  .pscore{font-size:11px;color:var(--muted);}
-  .pscore.neg{color:var(--green);}
-  .pscore.pos{color:var(--red);}
-  .pprize{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--green);white-space:nowrap;}
-  .pprize.z{color:var(--muted);}
-  .lbwrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-  .lbhdr{display:grid;grid-template-columns:40px 1fr 50px 42px 88px;padding:7px 11px;font-size:10px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);}
-  .lbrow{display:grid;grid-template-columns:40px 1fr 50px 42px 88px;padding:8px 11px;font-size:12px;align-items:center;border-bottom:1px solid var(--border);}
-  .lbrow.pk{background:rgba(0,200,83,0.05);}
-  .lbpos{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--muted);text-align:center;}
-  .lbname{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-  .lbowner{font-size:10px;color:var(--muted);}
-  .lbsc{text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;}
-  .lbsc.neg{color:var(--green);}
-  .lbsc.pos{color:var(--red);}
-  .lbth{text-align:center;font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;}
-  .lbpr{text-align:right;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--green);font-weight:600;}
-  .lbpr.z{color:var(--muted);}
-  .seclbl{padding:8px 11px 5px;font-size:10px;font-family:'Barlow Condensed',sans-serif;letter-spacing:2px;color:var(--muted);text-transform:uppercase;background:var(--bg2);}
-
-  .popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;}
-  .popup{background:var(--card);border:1px solid rgba(255,214,0,0.4);border-radius:16px;max-width:340px;width:100%;text-align:center;overflow:hidden;animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;}
-  @keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
-  .popup-img{width:100%;height:auto;object-fit:contain;display:block;}
-  .popup-body{padding:20px;}
-  .popup-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--gold);line-height:1.1;margin-bottom:8px;}
-  .popup-sub{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted);margin-bottom:18px;letter-spacing:0.5px;}
-  .popup-btn{display:block;width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#ff8f00);border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#000;cursor:pointer;}
-  .popup-btn:active{transform:scale(0.97);}
-  .loading{text-align:center;padding:50px 20px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:2px;font-size:13px;text-transform:uppercase;}
-  .spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .err{text-align:center;padding:40px 20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);line-height:1.8;}
-  .err a{color:var(--green);}
-  footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;border-top:1px solid var(--border);margin-top:16px;}
+:root{--green:#00c853;--gold:#ffd600;--silver:#b0bec5;--bronze:#ff7043;--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2235;--card:#161d2e;--border:rgba(255,255,255,0.07);--text:#e8eaf0;--muted:#6b7a99;--red:#ff4444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,200,83,0.07) 0%,transparent 60%);pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding-bottom:60px;}
+header{background:linear-gradient(180deg,#0d1520 0%,var(--bg) 100%);padding:20px 16px 12px;text-align:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);}
+.tour-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:3px;}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,8vw,40px);letter-spacing:2px;line-height:1;color:#fff;margin-bottom:5px;}
+h1 span{color:var(--green);}
+.purse{display:inline-flex;align-items:center;gap:5px;background:rgba(0,200,83,0.1);border:1px solid rgba(0,200,83,0.25);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:var(--green);margin-bottom:8px;}
+.stbar{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.4)}}
+.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:107px;z-index:99;overflow-x:auto;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex-shrink:0;padding:10px 12px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;white-space:nowrap;}
+.tab.on{color:var(--green);border-bottom-color:var(--green);}
+.sec{display:none;padding:14px;}
+.sec.on{display:block;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:9px;overflow:hidden;animation:slideUp 0.35s ease both;}
+@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card.r1{border-color:rgba(255,214,0,0.4);background:linear-gradient(135deg,#1a1600 0%,var(--card) 40%);}
+.card.r2{border-color:rgba(176,190,197,0.25);}
+.card.r3{border-color:rgba(255,112,67,0.25);}
+.ctop{display:flex;align-items:center;padding:13px 15px;gap:11px;cursor:pointer;}
+.mring{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.mring.gold{background:rgba(255,214,0,0.15);border:2px solid rgba(255,214,0,0.4);}
+.mring.silver{background:rgba(176,190,197,0.1);border:2px solid rgba(176,190,197,0.3);}
+.mring.bronze{background:rgba(255,112,67,0.1);border:2px solid rgba(255,112,67,0.3);}
+.mring.other{background:rgba(255,255,255,0.04);border:2px solid var(--border);font-family:'Bebas Neue';font-size:14px;color:var(--muted);}
+.cinfo{flex:1;min-width:0;}
+.cname{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;}
+.r1 .cname{color:var(--gold);}
+.csub{font-size:11px;color:var(--muted);margin-top:1px;font-family:'Barlow Condensed',sans-serif;}
+.ctotal{text-align:right;}
+.camount{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:1px;color:var(--green);line-height:1;}
+.r1 .camount{color:var(--gold);font-size:24px;}
+.clabel{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;}
+.chev{color:var(--muted);font-size:14px;transition:transform 0.2s;margin-left:3px;}
+.card.open .chev{transform:rotate(180deg);}
+.gbar{height:3px;background:var(--bg3);margin:0 15px 10px;}
+.gfill{height:100%;background:linear-gradient(90deg,var(--green),#69f0ae);transition:width .7s ease;}
+.prows{display:none;padding:0 15px 13px;gap:5px;flex-direction:column;}
+.card.open .prows{display:flex;}
+.prow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.04);border-radius:8px;padding:7px 11px;gap:8px;}
+.pleft{display:flex;align-items:center;gap:8px;flex:1;min-width:0;}
+.ppos{font-family:'Bebas Neue',sans-serif;font-size:15px;min-width:30px;text-align:center;color:var(--green);}
+.ppos.cut{color:var(--red);font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.ppos.unk{color:var(--muted);}
+.pname{font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#cdd5e0;}
+.pscore{font-size:11px;color:var(--muted);}
+.pscore.neg{color:var(--green);}
+.pscore.pos{color:var(--red);}
+.pprize{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--green);white-space:nowrap;}
+.pprize.z{color:var(--muted);}
+.arrow{font-size:12px;margin-left:5px;vertical-align:middle;}
+.arrow.up{color:var(--green);}
+.arrow.dn{color:var(--red);}
+.lbwrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.lbhdr{display:grid;grid-template-columns:40px 1fr 50px 42px 88px;padding:7px 11px;font-size:10px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);}
+.lbrow{display:grid;grid-template-columns:40px 1fr 50px 42px 88px;padding:8px 11px;font-size:12px;align-items:center;border-bottom:1px solid var(--border);}
+.lbrow.pk{background:rgba(0,200,83,0.05);}
+.lbpos{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--muted);text-align:center;}
+.lbname{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.lbowner{font-size:10px;color:var(--muted);}
+.lbsc{text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;}
+.lbsc.neg{color:var(--green);}
+.lbsc.pos{color:var(--red);}
+.lbth{text-align:center;font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;}
+.lbpr{text-align:right;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--green);font-weight:600;}
+.lbpr.z{color:var(--muted);}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.stat-card.gold-c{border-color:rgba(255,214,0,0.3);}
+.stat-card.gold-c .stat-val{color:var(--gold);}
+.stat-label{font-size:10px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--green);letter-spacing:1px;line-height:1;}
+.stat-sub{font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;margin-top:2px;}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
+.panel-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.leg-item{display:flex;align-items:center;gap:4px;font-size:10px;font-family:'Barlow Condensed',sans-serif;color:var(--muted);}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.h2h-sel-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.h2h-sel{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;width:100%;cursor:pointer;}
+.h2h-sel:focus{outline:none;border-color:rgba(0,200,83,0.4);}
+.h2hwrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.h2h-hdr{display:grid;grid-template-columns:1fr auto 1fr;padding:12px 14px;background:var(--bg2);border-bottom:1px solid var(--border);text-align:center;align-items:center;}
+.h2h-pname{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:#fff;}
+.h2h-vs{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted);}
+.h2h-tots{display:grid;grid-template-columns:1fr auto 1fr;padding:10px 14px;border-bottom:1px solid var(--border);text-align:center;align-items:center;}
+.h2h-tot{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--green);letter-spacing:1px;}
+.h2h-tot.lead{color:var(--gold);}
+.h2h-lbl{font-size:9px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;}
+.h2h-row{display:grid;grid-template-columns:1fr auto 1fr;padding:8px 14px;border-bottom:1px solid var(--border);align-items:center;gap:8px;}
+.h2h-pick{font-size:12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;color:#cdd5e0;}
+.h2h-pick.win{color:var(--green);}
+.h2h-pinfo{font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;}
+.h2h-mid{text-align:center;font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;}
+.chat-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.chat-msgs{max-height:320px;overflow-y:auto;padding:12px;}
+.chat-msg{margin-bottom:12px;}
+.chat-name{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--green);margin-bottom:2px;}
+.chat-bubble{background:rgba(255,255,255,0.05);border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.5;}
+.chat-time{font-size:10px;color:var(--muted);margin-top:3px;font-family:'Barlow Condensed',sans-serif;}
+.chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border);}
+.chat-namesel{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:12px;width:110px;flex-shrink:0;}
+.chat-inp{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;}
+.chat-inp:focus,.chat-namesel:focus,.h2h-sel:focus{outline:none;border-color:rgba(0,200,83,0.4);}
+.chat-send{background:var(--green);border:none;border-radius:8px;padding:8px 12px;color:#000;font-family:'Bebas Neue',sans-serif;font-size:15px;cursor:pointer;flex-shrink:0;}
+.chat-empty{text-align:center;padding:24px;font-size:12px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;}
+.winner-ov{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:998;display:none;align-items:center;justify-content:center;padding:20px;}
+.winner-ov.show{display:flex;}
+.winner-box{background:var(--card);border:2px solid var(--gold);border-radius:20px;max-width:340px;width:100%;text-align:center;padding:32px 24px;animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;}
+@keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+.winner-emoji{font-size:60px;margin-bottom:12px;animation:bounce 1s ease infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.winner-sub{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--muted);margin-bottom:4px;}
+.winner-name{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:2px;color:var(--gold);line-height:1;margin-bottom:6px;}
+.winner-prize{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--green);margin-bottom:16px;}
+.winner-close{padding:12px 24px;background:linear-gradient(135deg,var(--gold),#ff8f00);border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#000;cursor:pointer;}
+.popup-ov{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;}
+.popup{background:var(--card);border:1px solid rgba(255,214,0,0.4);border-radius:16px;max-width:340px;width:100%;text-align:center;overflow:hidden;animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;}
+.popup-img{width:100%;height:auto;object-fit:contain;display:block;}
+.popup-body{padding:20px;}
+.popup-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--gold);line-height:1.1;margin-bottom:8px;}
+.popup-sub{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted);margin-bottom:18px;}
+.popup-btn{display:block;width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#ff8f00);border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#000;cursor:pointer;}
+.rbtn{display:block;width:100%;margin-bottom:12px;padding:11px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.25);border-radius:10px;color:var(--green);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-align:center;}
+.loading{text-align:center;padding:50px 20px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:2px;font-size:13px;text-transform:uppercase;}
+.spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err{text-align:center;padding:30px 20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);line-height:1.8;}
+footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;border-top:1px solid var(--border);margin-top:16px;}
 </style>
 </head>
 <body>
 
-<div class="popup-overlay" id="welcome-popup">
+<div class="popup-ov" id="wpop">
   <div class="popup">
-    <img class="popup-img" src="https://i0.wp.com/www.denverpost.com/wp-content/uploads/2017/05/dbauyfcuiaa4s2n.jpg?w=620&crop=0%2C0px%2C100%2C9999px" alt="Tiger Woods" onerror="this.style.display='none'">
+    <img class="popup-img" src="https://i0.wp.com/www.denverpost.com/wp-content/uploads/2017/05/dbauyfcuiaa4s2n.jpg?w=620&crop=0%2C0px%2C100%2C9999px" alt="Tiger" onerror="this.style.display='none'">
     <div class="popup-body">
       <div class="popup-title">Welcome to The Masters Sweepstake 2026! 🏌️</div>
       <div class="popup-sub">Good luck everyone... you're going to need it</div>
       <div id="install-hint" style="margin-bottom:14px;padding:10px 12px;background:rgba(255,255,255,0.05);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#a0aec0;line-height:1.6;text-align:left;"></div>
-      <button class="popup-btn" onclick="document.getElementById('welcome-popup').style.display='none'">LET'S GO ⛳</button>
+      <button class="popup-btn" onclick="document.getElementById('wpop').style.display='none'">LET'S GO ⛳</button>
     </div>
   </div>
 </div>
-<script>
-(function(){
-  const hint = document.getElementById('install-hint');
-  const ua = navigator.userAgent;
-  const isIOS = /iphone|ipad|ipod/i.test(ua);
-  const isAndroid = /android/i.test(ua);
-  const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-  if(isInStandalone){ hint.style.display='none'; return; }
-  if(isIOS){
-    hint.innerHTML = '📱 <strong style="color:#e8eaf0">Add to your home screen!</strong><br>Tap the <strong style="color:#e8eaf0">Share button</strong> (box with arrow) at the bottom of Safari, then tap <strong style="color:#e8eaf0">"Add to Home Screen"</strong>';
-  } else if(isAndroid){
-    hint.innerHTML = '📱 <strong style="color:#e8eaf0">Add to your home screen!</strong><br>Tap the <strong style="color:#e8eaf0">three dots menu</strong> in Chrome, then tap <strong style="color:#e8eaf0">"Add to Home Screen"</strong>';
-  } else {
-    hint.style.display='none';
-  }
-})();
-</script>
+
+<div class="winner-ov" id="winner-ov">
+  <div class="winner-box">
+    <div class="winner-emoji">🏆</div>
+    <div class="winner-sub">Sweepstake Winner</div>
+    <div class="winner-name" id="winner-name">-</div>
+    <div class="winner-prize" id="winner-prize">-</div>
+    <button class="winner-close" onclick="document.getElementById('winner-ov').classList.remove('show')">CLOSE</button>
+  </div>
+</div>
+
 <div class="wrap">
   <header>
     <div class="tour-label">⛳ 2026 PGA Tour · TPC San Antonio</div>
     <h1>VALERO <span>SWEEPSTAKE</span></h1>
     <div class="purse">💰 $9,800,000 Purse</div>
-    <div class="stbar"><span class="dot"></span><span id="stxt">Loading live scores...</span></div>
+    <div class="stbar"><span class="dot"></span><span id="stxt">Loading...</span></div>
   </header>
   <div class="tabs">
     <div class="tab on" onclick="show('st')">🏆 Standings</div>
-    <div class="tab" onclick="show('lb')">📊 Leaderboard</div>
+    <div class="tab" onclick="show('lb')">📊 Board</div>
+    <div class="tab" onclick="show('stats')">📈 Stats</div>
+    <div class="tab" onclick="show('h2h')">⚔️ H2H</div>
+    <div class="tab" onclick="show('chat')">💬 Chat</div>
   </div>
   <div id="st" class="sec on"><div class="loading"><div class="spin"></div>Fetching scores...</div></div>
-  <div id="lb" class="sec"><div class="loading"><div class="spin"></div>Fetching leaderboard...</div></div>
-  <footer id="foot">Auto-refreshes every 5 minutes</footer>
+  <div id="lb" class="sec"><div class="loading"><div class="spin"></div>Loading...</div></div>
+  <div id="stats" class="sec"><div class="loading"><div class="spin"></div>Loading...</div></div>
+  <div id="h2h" class="sec"><div class="loading"><div class="spin"></div>Loading...</div></div>
+  <div id="chat" class="sec"><div class="loading"><div class="spin"></div>Loading...</div></div>
+  <footer id="foot">Auto-refreshes every minute</footer>
 </div>
+
 <script>
-// ── REPLACE THIS URL WITH YOUR PUBLISHED GOOGLE SHEET CSV URL ──
-// Instructions: File > Share > Publish to web > Sheet: Leaderboard > CSV > Publish > Copy link
-const DATA_URL = "/.netlify/functions/scores";
-
-const PICKS={
-  "Joe Blunt":["Tommy Fleetwood","Tony Finau","Russell Henley","Jordan Spieth","Ludvig Aberg"],
-  "Stephen Mills":["Mark Hubbard","Davis Thompson","Will Zalatoris","Brian Harman","Rickie Fowler"],
-  "Andrew Docwra":["Robert MacIntyre","Sam Ryder","Andrew Putnam","Nick Taylor","Maverick McNealy"],
-  "Linden Grubb":["Steven Fisk","JJ Spaun","Denny McCarthy","Doc Redman","Adam Schenk"],
-  "Charlie Blunt":["Christiaan Lamprecht","Kevin Streelman","Sahith Theegala","Taylor Moore","Harris English"],
-  "Matt Harding-Smith":["Wyndham Clark","Sepp Straka","Keith Mitchell","Beau Hossler","Dylan Wu"],
-  "Mario Zakakiotis":["Cameron Young","Ben Griffin","Austin Smotherman","Patrick Rodgers","Tom Hoge"],
-  "Dom Hunt":["Akshay Bhatia","Ryan Brehm","Luke Clanton","Chris Gotterup","Alex Smalley"],
-  "Tommy North":["Peter Malnati","Justin Lower","Michael Kim","Scott Stallings","James Hahn"],
-  "Max Maciver":["Aaron Rai","Ben Taylor","Brendon Todd","Matt Kuchar","Stephan Jaeger"],
-  "Test Player 1":["Alex Smalley","Tommy Fleetwood","Mark Hubbard","Robert MacIntyre","Steven Fisk"],
-  "Test Player 2":["Davis Thompson","Andrew Putnam","Will Zalatoris","Sam Ryder","Tony Finau"],
-  "Test Player 3":["Christiaan Lamprecht","Jordan Spieth","Maverick McNealy","JJ Spaun","Cameron Young"],
-  "Test Player 4":["Alex Smalley","Wyndham Clark","Sahith Theegala","Nick Taylor","Akshay Bhatia"],
-  "Test Player 5":["Mark Hubbard","Steven Fisk","Ben Griffin","Sepp Straka","Tom Hoge"],
-  "Test Player 6":["Robert MacIntyre","Tommy Fleetwood","Russell Henley","Davis Thompson","Austin Smotherman"],
-  "Test Player 7":["Andrew Putnam","Kevin Streelman","Rickie Fowler","Chris Gotterup","Aaron Rai"],
-  "Test Player 8":["Tony Finau","Sam Ryder","Ludvig Aberg","Denny McCarthy","Stephan Jaeger"],
-  "Test Player 9":["Will Zalatoris","Alex Smalley","Brian Harman","Cameron Young","Keith Mitchell"],
-  "Test Player 10":["Mark Hubbard","Robert MacIntyre","Tommy Fleetwood","Steven Fisk","Andrew Putnam"]
-};
-
+const DATA_URL="/.netlify/functions/scores";
+const PICKS={"Joe Blunt":["Tommy Fleetwood","Tony Finau","Russell Henley","Jordan Spieth","Ludvig Aberg"],"Stephen Mills":["Mark Hubbard","Davis Thompson","Will Zalatoris","Brian Harman","Rickie Fowler"],"Andrew Docwra":["Robert MacIntyre","Sam Ryder","Andrew Putnam","Nick Taylor","Maverick McNealy"],"Linden Grubb":["Steven Fisk","JJ Spaun","Denny McCarthy","Doc Redman","Adam Schenk"],"Charlie Blunt":["Christiaan Lamprecht","Kevin Streelman","Sahith Theegala","Taylor Moore","Harris English"],"Matt Harding-Smith":["Wyndham Clark","Sepp Straka","Keith Mitchell","Beau Hossler","Dylan Wu"],"Mario Zakakiotis":["Cameron Young","Ben Griffin","Austin Smotherman","Patrick Rodgers","Tom Hoge"],"Dom Hunt":["Akshay Bhatia","Ryan Brehm","Luke Clanton","Chris Gotterup","Alex Smalley"],"Tommy North":["Peter Malnati","Justin Lower","Michael Kim","Scott Stallings","James Hahn"],"Max Maciver":["Aaron Rai","Ben Taylor","Brendon Todd","Matt Kuchar","Stephan Jaeger"],"Test Player 1":["Alex Smalley","Tommy Fleetwood","Mark Hubbard","Robert MacIntyre","Steven Fisk"],"Test Player 2":["Davis Thompson","Andrew Putnam","Will Zalatoris","Sam Ryder","Tony Finau"],"Test Player 3":["Christiaan Lamprecht","Jordan Spieth","Maverick McNealy","JJ Spaun","Cameron Young"],"Test Player 4":["Alex Smalley","Wyndham Clark","Sahith Theegala","Nick Taylor","Akshay Bhatia"],"Test Player 5":["Mark Hubbard","Steven Fisk","Ben Griffin","Sepp Straka","Tom Hoge"],"Test Player 6":["Robert MacIntyre","Tommy Fleetwood","Russell Henley","Davis Thompson","Austin Smotherman"],"Test Player 7":["Andrew Putnam","Kevin Streelman","Rickie Fowler","Chris Gotterup","Aaron Rai"],"Test Player 8":["Tony Finau","Sam Ryder","Ludvig Aberg","Denny McCarthy","Stephan Jaeger"],"Test Player 9":["Will Zalatoris","Alex Smalley","Brian Harman","Cameron Young","Keith Mitchell"],"Test Player 10":["Mark Hubbard","Robert MacIntyre","Tommy Fleetwood","Steven Fisk","Andrew Putnam"]};
 const PM={1:1764000,2:1068200,3:676200,4:480200,5:401800,6:355250,7:330750,8:306250,9:286650,10:267050,11:247450,12:227850,13:208250,14:188650,15:178850,16:169050,17:159250,18:149450,19:139650,20:129850,21:120050,22:110250,23:102410,24:94570,25:86730,26:78890,27:75950,28:73010,29:70070,30:67130,31:64190,32:61250,33:58310,34:55860,35:53410,36:50960,37:48510,38:46550,39:44590,40:42630,41:40670,42:38710,43:36750,44:34790,45:32830,46:30870,47:28910,48:27342,49:25970,50:25186,51:24598,52:24010,53:23618,54:23226,55:23030,56:22834,57:22638,58:22442,59:22246,60:22050,61:21854,62:21658,63:21462,64:21266,65:21070};
-
+const COLORS=["#00c853","#ffd600","#ff7043","#40c4ff","#ea80fc","#69f0ae","#ff6e40","#b388ff","#84ffff","#ccff90","#ff80ab","#ffd740","#80d8ff","#a7ffeb","#ffe57f","#ff9e80","#cfd8dc","#b2dfdb","#f8bbd0","#c5cae9"];
 const p2p={};
-Object.entries(PICKS).forEach(([per,pks])=>pks.forEach(n=>{
-  const key=n.toLowerCase();
-  if(!p2p[key])p2p[key]=[];
-  p2p[key].push(per);
-}));
-
-let players=[];
+Object.entries(PICKS).forEach(([p,pks])=>pks.forEach(n=>{const k=n.toLowerCase();if(!p2p[k])p2p[k]=[];p2p[k].push(p);}));
+let players=[],prevRanks={},curRanks={},history=[],tournDone=false;
+let chatMsgs=[];
+try{chatMsgs=JSON.parse(localStorage.getItem("swp_chat")||"[]");}catch(e){}
 
 function show(id){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',['st','lb'][i]===id));
-  document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id===id));
+  document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("on",["st","lb","stats","h2h","chat"][i]===id));
+  document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on",s.id===id));
+  if(id==="h2h")renderH2H();
+  if(id==="chat")renderChat();
+  if(id==="stats")renderStats();
 }
-function fmt(n){return n?'$'+n.toLocaleString('en-GB'):'$0';}
-function sc(s){if(!s||s==='E')return '';if(String(s).startsWith('-'))return 'neg';return 'pos';}
+function fmt(n){return n?"$"+n.toLocaleString("en-GB"):"$0";}
+function sc(s){if(!s||s==="E")return "";if(String(s).startsWith("-"))return "neg";return "pos";}
 function find(name){
   const lo=name.toLowerCase();
   let m=players.find(p=>p.name.toLowerCase()===lo);
-  if(!m){const last=lo.split(' ').pop();m=players.find(p=>p.name.toLowerCase().endsWith(last));}
+  if(!m){const last=lo.split(" ").pop();m=players.find(p=>p.name.toLowerCase().endsWith(last));}
   return m||null;
 }
-
-function calcPrizes(players){
-  // Group players by position to handle ties correctly
-  const groups={};
-  players.forEach(p=>{
-    if(p.pos>=999)return;
-    if(!groups[p.pos])groups[p.pos]=[];
-    groups[p.pos].push(p);
-  });
-  // For each tied group, average the prize money across all tied positions
-  // e.g. 4 players tied 2nd: average prize money for 2nd+3rd+4th+5th, split equally
-  Object.entries(groups).forEach(([pos,group])=>{
+function calcPrizes(pl){
+  const g={};
+  pl.forEach(p=>{if(p.pos>=999)return;if(!g[p.pos])g[p.pos]=[];g[p.pos].push(p);});
+  Object.entries(g).forEach(([pos,grp])=>{
     pos=parseInt(pos);
-    if(pos>65){group.forEach(p=>p.prize=0);return;}
-    const count=group.length;
-    let total=0;
-    for(let i=0;i<count;i++){
-      total+=PM[pos+i]||0;
-    }
-    const avg=Math.round(total/count);
-    group.forEach(p=>p.prize=avg);
+    if(pos>65){grp.forEach(p=>p.prize=0);return;}
+    let tot=0;for(let i=0;i<grp.length;i++)tot+=PM[pos+i]||0;
+    const avg=Math.round(tot/grp.length);grp.forEach(p=>p.prize=avg);
   });
 }
-
-function parseCSV(csv){
-  const lines=csv.trim().split('\n');
-  const rows=[];
-  for(let i=1;i<lines.length;i++){
-    const cols=lines[i].split(',').map(c=>c.trim().replace(/^"|"$/g,''));
-    if(cols.length<5||!cols[2])continue;
-    const pos=parseInt(cols[0])||999;
-    rows.push({pos,posDisplay:cols[1]||String(pos),name:cols[2],score:cols[3]||'E',thru:cols[4]||'-',prize:0});
-  }
-  rows.sort((a,b)=>a.pos-b.pos);
-  calcPrizes(rows);
-  return rows;
+function calcRes(){
+  return Object.entries(PICKS).map(([per,pks])=>{
+    let tot=0;
+    const dets=pks.map(name=>{const d=find(name);const prize=d?d.prize:0;tot+=prize;return{name,prize,pos:d?d.posDisplay:"?",score:d?d.score:"-",found:!!d};});
+    return{per,dets,tot};
+  }).sort((a,b)=>b.tot-a.tot);
 }
 
 async function loadData(){
   try{
-    const url=DATA_URL+'?t='+Date.now();
-    const resp=await fetch(url);
-    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const resp=await fetch(DATA_URL+"?t="+Date.now());
+    if(!resp.ok)throw new Error("HTTP "+resp.status);
     const json=await resp.json();
-    if(!json.length)throw new Error('No data');
-    players=json.map(r=>({
-      pos:parseInt(r.pos)||999,
-      posDisplay:r.posDisplay||String(r.pos),
-      name:r.name,
-      score:r.score||'E',
-      thru:r.thru||'-',
-      prize:0
-    })).sort((a,b)=>a.pos-b.pos);
+    if(!json.length)throw new Error("No data");
+    prevRanks={...curRanks};
+    players=json.map(r=>({pos:parseInt(r.pos)||999,posDisplay:r.posDisplay||String(r.pos),name:r.name,score:r.score||"E",thru:r.thru||"-",prize:0})).sort((a,b)=>a.pos-b.pos);
     calcPrizes(players);
-    if(!players.length)throw new Error('No data');
+    const res=calcRes();
+    res.forEach((r,i)=>{curRanks[r.per]=i+1;});
     const now=new Date();
-    document.getElementById('stxt').textContent='Live · Updated '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('foot').textContent='Last updated: '+now.toLocaleString('en-GB')+' · Auto-refreshes every 5 mins';
+    const label=now.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+    const totals={};res.forEach(r=>{totals[r.per]=r.tot;});
+    history.push({label,totals});
+    if(history.length>40)history.shift();
+    const allDone=Object.values(PICKS).flat().every(n=>{const d=find(n);return !d||d.thru==="F";});
+    if(allDone&&players.length&&!tournDone){tournDone=true;showWinner(res[0]);}
+    document.getElementById("stxt").textContent="Live · Updated "+label;
+    document.getElementById("foot").textContent="Last updated: "+now.toLocaleString("en-GB")+" · Auto-refreshes every minute";
     render();
   }catch(e){
     console.error(e);
-    document.getElementById('st').innerHTML=`<div class="err">⚠️ Could not load data from Google Sheet.<br><br>Make sure you've published the sheet as CSV and pasted the correct URL into the website file.<br><br><a href="#" onclick="loadData();return false;">Try again</a></div>`;
-    document.getElementById('stxt').textContent='Error loading data';
+    document.getElementById("st").innerHTML='<div class="err">⚠️ Could not load scores.<br><br><a href="#" onclick="loadData();return false;">Try again</a></div>';
+    document.getElementById("stxt").textContent="Error loading data";
   }
 }
 
-function showSetupMsg(){
-  const msg=`<div class="err">
-    ⚙️ <strong>One more step!</strong><br><br>
-    Open this HTML file and replace:<br>
-    <code style="color:var(--green);font-size:11px">PASTE_YOUR_SHEET_CSV_URL_HERE</code><br><br>
-    with your Google Sheet publish URL.<br><br>
-    See the instructions file for help.
-  </div>`;
-  document.getElementById('st').innerHTML=msg;
-  document.getElementById('stxt').textContent='Setup needed';
-}
-
 function render(){
-  renderSt();
-  renderLb();
+  renderSt();renderLb();
+  const active=document.querySelector(".sec.on")?.id;
+  if(active==="stats")renderStats();
+  if(active==="h2h")renderH2H();
 }
 
 function renderSt(){
-  const res=Object.entries(PICKS).map(([per,pks])=>{
-    let tot=0;
-    const dets=pks.map(name=>{
-      const d=find(name);
-      const prize=d?d.prize:0;
-      tot+=prize;
-      return {name,prize,pos:d?d.posDisplay:'?',score:d?d.score:'-',found:!!d};
-    });
-    return {per,dets,tot};
-  }).sort((a,b)=>b.tot-a.tot);
-
+  const res=calcRes();
   const top=res[0]?.tot||1;
-  const mc=['gold','silver','bronze'];
-  const me=['🥇','🥈','🥉'];
-
-  let html='<button style="display:block;width:100%;margin-bottom:12px;padding:11px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.25);border-radius:10px;color:var(--green);font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-align:center;" onclick="loadData()">🔄 Refresh Scores</button>';
+  const mc=["gold","silver","bronze"];
+  const me=["🥇","🥈","🥉"];
+  let html='<button class="rbtn" onclick="loadData()">🔄 Refresh Scores</button>';
   res.forEach((r,i)=>{
     const gap=i>0?res[0].tot-r.tot:0;
-    const gs=gap>0?'$'+gap.toLocaleString('en-GB')+' behind':'🔥 Leading';
+    const gs=gap>0?"$"+gap.toLocaleString("en-GB")+" behind":"🔥 Leading";
     const pct=Math.round((r.tot/top)*100);
-    const mrc=i<3?mc[i]:'other';
-    const mrv=i<3?me[i]:(i+1);
-
+    const prev=prevRanks[r.per],curr=i+1;
+    let arr="";
+    if(prev&&prev!==curr)arr=curr<prev?'<span class="arrow up">▲</span>':'<span class="arrow dn">▼</span>';
+    else if(prev)arr='<span class="arrow" style="color:var(--muted)">–</span>';
     const prs=r.dets.map(d=>{
-      const isCut=d.found&&d.prize===0&&d.pos!=='?'&&d.pos!=='CUT';
-      const pc=!d.found?'unk':(isCut?'cut':'');
-      return `<div class="prow"><div class="pleft"><span class="ppos ${pc}">${d.pos}</span><span class="pname">${d.name}</span><span class="pscore ${sc(d.score)}">${d.score!=='-'?d.score:''}</span></div><span class="pprize ${d.prize===0?'z':''}">${fmt(d.prize)}</span></div>`;
-    }).join('');
-
-    html+=`<div class="card ${i===0?'r1':i===1?'r2':i===2?'r3':''}" id="c${i}">
-      <div class="ctop" onclick="tog(${i})">
-        <div class="mring ${mrc}">${mrv}</div>
-        <div class="cinfo"><div class="cname">${r.per}</div><div class="csub">${gs} · tap to see picks</div></div>
-        <div class="ctotal"><div class="camount">${fmt(r.tot)}</div><div class="clabel">projected</div></div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="gbar"><div class="gfill" style="width:${pct}%"></div></div>
-      <div class="prows">${prs}</div>
-    </div>`;
+      const isCut=d.found&&d.prize===0&&d.pos!=="?"&&d.pos!=="CUT";
+      const pc=!d.found?"unk":(isCut?"cut":"");
+      return '<div class="prow"><div class="pleft"><span class="ppos '+pc+'">'+(d.pos)+'</span><span class="pname">'+(d.name)+'</span><span class="pscore '+(sc(d.score))+'">'+(d.score!=="-"?d.score:"")+'</span></div><span class="pprize '+(d.prize===0?"z":"")+'">'+(fmt(d.prize))+'</span></div>';
+    }).join("");
+    html+='<div class="card '+(i===0?"r1":i===1?"r2":i===2?"r3":"")+'" id="c'+(i)+'">'+
+      '<div class="ctop" onclick="tog('+(i)+')">'+
+      '<div class="mring '+(i<3?mc[i]:"other")+'">'+(i<3?me[i]:i+1)+'</div>'+
+      '<div class="cinfo"><div class="cname">'+(r.per)+arr+'</div><div class="csub">'+(gs)+' · tap to see picks</div></div>'+
+      '<div class="ctotal"><div class="camount">'+(fmt(r.tot))+'</div><div class="clabel">projected</div></div>'+
+      '<span class="chev">▾</span></div>'+
+      '<div class="gbar"><div class="gfill" style="width:'+(pct)+'%"></div></div>'+
+      '<div class="prows">'+(prs)+'</div></div>';
   });
-  document.getElementById('st').innerHTML=html;
+  document.getElementById("st").innerHTML=html;
 }
 
 function renderLb(){
   if(!players.length)return;
-  let html=`<div class="lbwrap"><div class="lbhdr"><span style="text-align:center">Pos</span><span>Player</span><span style="text-align:center">Score</span><span style="text-align:center">Thru</span><span style="text-align:right">Prize</span></div>`;
-  players.forEach(p=>{html+=lbr(p);});
-  html+=`</div>`;
-  document.getElementById('lb').innerHTML=html;
+  let html='<div class="lbwrap"><div class="lbhdr"><span style="text-align:center">Pos</span><span>Player</span><span style="text-align:center">Score</span><span style="text-align:center">Thru</span><span style="text-align:right">Prize</span></div>';
+  players.forEach(p=>{
+    const owners=p2p[p.name.toLowerCase()];
+    const pr=p.prize>0?fmt(p.prize):(p.pos>=999?"CUT":"-");
+    const oh=owners&&owners.length?'<div class="lbowner">'+(owners.join(", "))+'</div>':""
+    html+='<div class="lbrow '+(owners?"pk":"")+'"><span class="lbpos">'+(p.posDisplay)+'</span><span class="lbname">'+(p.name)+(oh)+'</span><span class="lbsc '+(sc(p.score))+'">'+(p.score)+'</span><span class="lbth">'+(p.thru)+'</span><span class="lbpr '+(p.prize===0?"z":"")+'">'+(pr)+'</span></div>';
+  });
+  html+="</div>";
+  document.getElementById("lb").innerHTML=html;
 }
 
-function lbr(p){
-  const owners=p2p[p.name.toLowerCase()];
-  const pr=p.prize>0?fmt(p.prize):(p.pos>=999?'CUT':'-');
-  const ownerHtml=owners&&owners.length?`<div class="lbowner">${owners.join(', ')}</div>`:'';
-  return `<div class="lbrow ${owners?'pk':''}"><span class="lbpos">${p.posDisplay}</span><span class="lbname">${p.name}${ownerHtml}</span><span class="lbsc ${sc(p.score)}">${p.score}</span><span class="lbth">${p.thru}</span><span class="lbpr ${p.prize===0?'z':''}">${pr}</span></div>`;
+function renderStats(){
+  const res=calcRes();
+  if(!res.length||!players.length){document.getElementById("stats").innerHTML='<div class="loading"><div class="spin"></div>Loading...</div>';return;}
+  let climber=null,climbAmt=0;
+  if(history.length>1){
+    const first=history[0].totals,last=history[history.length-1].totals;
+    Object.keys(last).forEach(n=>{const gain=(last[n]||0)-(first[n]||0);if(gain>climbAmt){climbAmt=gain;climber=n;}});
+  }
+  const atRisk=players.filter(p=>p2p[p.name.toLowerCase()]&&p.pos>=55&&p.pos<999).slice(0,4);
+  let bestP=null,bestPr=0;
+  players.forEach(p=>{if(p2p[p.name.toLowerCase()]&&p.prize>bestPr){bestPr=p.prize;bestP=p;}});
+  const gap2=res.length>1?res[0].tot-res[1].tot:0;
+  let html='<div class="stat-grid">';
+  html+='<div class="stat-card gold-c"><div class="stat-label">🏆 Leading</div><div class="stat-val">'+(res[0].per.split(" ")[0])+'</div><div class="stat-sub">'+(fmt(res[0].tot))+'</div></div>';
+  html+='<div class="stat-card"><div class="stat-label">📏 Gap to 2nd</div><div class="stat-val">'+(fmt(gap2))+'</div><div class="stat-sub">'+(res[1]?.per.split(" ")[0]||"-")+' in 2nd</div></div>';
+  html+='<div class="stat-card"><div class="stat-label">📈 Biggest Climber</div><div class="stat-val">'+(climber?climber.split(" ")[0]:"–")+'</div><div class="stat-sub">'+(climbAmt>0?"+"+fmt(climbAmt):"Tracking...")+'</div></div>';
+  html+='<div class="stat-card gold-c"><div class="stat-label">⭐ Best Pick</div><div class="stat-val">'+(bestP?bestP.name.split(" ").pop():"–")+'</div><div class="stat-sub">'+(bestP?bestP.posDisplay+" · "+fmt(bestPr):"–")+'</div></div>';
+  html+="</div>";
+  if(atRisk.length){
+    html+='<div class="panel"><div class="panel-title">⚠️ At Risk of Cut</div>';
+    atRisk.forEach(p=>{
+      const owners=(p2p[p.name.toLowerCase()]||[]).join(", ");
+      html+='<div class="prow" style="margin-bottom:6px"><div class="pleft"><span class="ppos" style="color:var(--red)">'+(p.posDisplay)+'</span><span class="pname">'+(p.name)+'</span><span class="pscore '+(sc(p.score))+'">'+(p.score)+'</span></div><span style="font-size:10px;color:var(--muted);font-family:Barlow Condensed,sans-serif">'+(owners)+'</span></div>';
+    });
+    html+="</div>";
+  }
+  html+='<div class="panel"><div class="panel-title">📊 Round by Round</div>';
+  if(history.length<2){
+    html+='<div style="text-align:center;padding:24px;font-size:12px;color:var(--muted);font-family:Barlow Condensed,sans-serif">Chart builds up as scores update throughout the tournament</div>';
+  }else{
+    const parts=Object.keys(PICKS);
+    const W=300,H=140,pad={t:10,r:10,b:20,l:50};
+    const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+    let minV=Infinity,maxV=0;
+    history.forEach(h=>parts.forEach(p=>{const v=h.totals[p]||0;if(v<minV)minV=v;if(v>maxV)maxV=v;}));
+    if(maxV===minV)maxV=minV+1;
+    const xStep=cW/(history.length-1||1);
+    const yS=v=>pad.t+cH-(((v-minV)/(maxV-minV))*cH);
+    let svg='<svg viewBox="0 0 '+(W)+" "+(H)+'" style="width:100%">';
+    svg+='<text x="'+(pad.l-4)+'" y="'+(pad.t+8)+'" fill="#6b7a99" font-size="9" text-anchor="end">'+(fmt(maxV))+'</text>';
+    svg+='<text x="'+(pad.l-4)+'" y="'+(pad.t+cH)+'" fill="#6b7a99" font-size="9" text-anchor="end">'+(fmt(minV))+'</text>';
+    if(history.length>0){
+      svg+='<text x="'+(pad.l)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(history[0].label)+'</text>';
+      svg+='<text x="'+(pad.l+cW)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(history[history.length-1].label)+'</text>';
+    }
+    parts.forEach((p,pi)=>{
+      const color=COLORS[pi%COLORS.length];
+      const pts=history.map((h,i)=>pad.l+i*xStep+","+yS(h.totals[p]||0)).join(" ");
+      svg+='<polyline points="'+(pts)+'" fill="none" stroke="'+(color)+'" stroke-width="1.5" opacity="0.8"/>';
+      const lv=history[history.length-1].totals[p]||0;
+      svg+='<circle cx="'+(pad.l+cW)+'" cy="'+(yS(lv))+'" r="3" fill="'+(color)+'"/>';
+    });
+    svg+="</svg>";
+    html+='<div style="overflow-x:auto">'+(svg)+"</div>";
+    html+='<div class="legend">';
+    parts.forEach((p,pi)=>{html+='<div class="leg-item"><div class="leg-dot" style="background:'+(COLORS[pi%COLORS.length])+'"></div>'+(p.split(" ")[0])+"</div>";});
+    html+="</div>";
+  }
+  html+="</div>";
+  document.getElementById("stats").innerHTML=html;
 }
 
-function tog(i){document.getElementById('c'+i).classList.toggle('open');}
+function renderH2H(){
+  const names=Object.keys(PICKS);
+  const p1v=document.getElementById("h2h-p1")?.value||names[0];
+  const p2v=document.getElementById("h2h-p2")?.value||names[1];
+  const mkOpts=(sel)=>names.map(n=>'<option value="'+(n)+'" '+(n===sel?"selected":"")+'>'+(n)+'</option>').join("");
+  let html='<div class="h2h-sel-wrap"><select class="h2h-sel" id="h2h-p1" onchange="renderH2H()">'+(mkOpts(p1v))+'</select><select class="h2h-sel" id="h2h-p2" onchange="renderH2H()">'+(mkOpts(p2v))+"</select></div>";
+  if(!players.length){html+='<div class="err">Waiting for scores...</div>';document.getElementById("h2h").innerHTML=html;return;}
+  const p1pks=PICKS[p1v]||[],p2pks=PICKS[p2v]||[];
+  let p1t=0,p2t=0;
+  p1pks.forEach(n=>{const d=find(n);if(d)p1t+=d.prize;});
+  p2pks.forEach(n=>{const d=find(n);if(d)p2t+=d.prize;});
+  const p1w=p1t>p2t,p2w=p2t>p1t;
+  html+='<div class="h2hwrap"><div class="h2h-hdr"><div class="h2h-pname">'+(p1v)+'</div><div class="h2h-vs">VS</div><div class="h2h-pname">'+(p2v)+'</div></div>';
+  html+='<div class="h2h-tots"><div><div class="h2h-tot '+(p1w?"lead":"")+'">'+(fmt(p1t))+'</div><div class="h2h-lbl">Total</div></div>';
+  html+='<div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--muted)">'+(p1w?"LEADS":p2w?"TRAILS":"TIE")+'</div>';
+  html+='<div><div class="h2h-tot '+(p2w?"lead":"")+'">'+(fmt(p2t))+'</div><div class="h2h-lbl">Total</div></div></div>';
+  for(let i=0;i<5;i++){
+    const ln=p1pks[i]||"",rn=p2pks[i]||"";
+    const ld=ln?find(ln):null,rd=rn?find(rn):null;
+    const lp=ld?ld.prize:0,rp=rd?rd.prize:0;
+    html+='<div class="h2h-row"><div><div class="h2h-pick '+(lp>rp?"win":"")+'">'+(ln)+'</div><div class="h2h-pinfo">'+(ld?ld.posDisplay+" · "+fmt(lp):"–")+'</div></div><div class="h2h-mid">vs</div><div style="text-align:right"><div class="h2h-pick '+(rp>lp?"win":"")+'">'+(rn)+'</div><div class="h2h-pinfo" style="text-align:right">'+(rd?rd.posDisplay+" · "+fmt(rp):"–")+'</div></div></div>';
+  }
+  html+="</div>";
+  document.getElementById("h2h").innerHTML=html;
+}
+
+function renderChat(){
+  const names=Object.keys(PICKS);
+  let html='<div class="chat-wrap"><div class="chat-msgs" id="chat-msgs">';
+  if(!chatMsgs.length)html+='<div class="chat-empty">No messages yet — be the first to talk trash! 🗑️</div>';
+  else chatMsgs.forEach(m=>{html+='<div class="chat-msg"><div class="chat-name">'+(m.name)+'</div><div class="chat-bubble">'+(m.text)+'</div><div class="chat-time">'+(m.time)+'</div></div>';});
+  html+='</div><div class="chat-form"><select class="chat-namesel" id="chat-name">'+(names.map(n=>'<option value="'+(n)+'">'+(n.split(" ")[0])+"</option>").join(""))+'</select><input class="chat-inp" id="chat-inp" placeholder="Talk trash..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()"><button class="chat-send" onclick="sendChat()">Send</button></div></div>';
+  document.getElementById("chat").innerHTML=html;
+  const msgs=document.getElementById("chat-msgs");
+  if(msgs)msgs.scrollTop=msgs.scrollHeight;
+}
+
+function sendChat(){
+  const name=document.getElementById("chat-name")?.value;
+  const text=document.getElementById("chat-inp")?.value?.trim();
+  if(!name||!text)return;
+  const now=new Date();
+  chatMsgs.push({name,text,time:now.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})});
+  if(chatMsgs.length>50)chatMsgs.shift();
+  try{localStorage.setItem("swp_chat",JSON.stringify(chatMsgs));}catch(e){}
+  renderChat();
+  document.getElementById("chat-inp").value="";
+}
+
+function showWinner(w){
+  document.getElementById("winner-name").textContent=w.per;
+  document.getElementById("winner-prize").textContent=fmt(w.tot)+" projected";
+  document.getElementById("winner-ov").classList.add("show");
+}
+function tog(i){document.getElementById("c"+i).classList.toggle("open");}
+
+(function(){
+  const hint=document.getElementById("install-hint");
+  const ua=navigator.userAgent;
+  const isIOS=/iphone|ipad|ipod/i.test(ua);
+  const isAndroid=/android/i.test(ua);
+  const isSA=window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone;
+  if(isSA||(!isIOS&&!isAndroid)){hint.style.display="none";return;}
+  if(isIOS)hint.innerHTML='📱 <strong style="color:#e8eaf0">Add to your home screen!</strong><br>Tap the <strong style="color:#e8eaf0">Share button</strong> then <strong style="color:#e8eaf0">"Add to Home Screen"</strong>';
+  else hint.innerHTML='📱 <strong style="color:#e8eaf0">Add to your home screen!</strong><br>Tap the <strong style="color:#e8eaf0">three dots menu</strong> then <strong style="color:#e8eaf0">"Add to Home Screen"</strong>';
+})();
 
 loadData();
-setInterval(loadData, 60000); // refresh every 1 min
+setInterval(loadData,60000);
 </script>
 </body>
 </html>
