@@ -117,16 +117,29 @@ h1 span{color:var(--green);}
 
 
 
-.winner-ov{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:998;display:none;align-items:center;justify-content:center;padding:20px;}
-.winner-ov.show{display:flex;}
-.winner-box{background:var(--card);border:2px solid var(--gold);border-radius:20px;max-width:340px;width:100%;text-align:center;padding:32px 24px;animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;}
-@keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
-.winner-emoji{font-size:60px;margin-bottom:12px;animation:bounce 1s ease infinite;}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.winner-sub{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--muted);margin-bottom:4px;}
-.winner-name{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:2px;color:var(--gold);line-height:1;margin-bottom:6px;}
-.winner-prize{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--green);margin-bottom:16px;}
-.winner-close{padding:12px 24px;background:linear-gradient(135deg,var(--gold),#ff8f00);border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#000;cursor:pointer;}
+.podium-ov{position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:998;display:none;align-items:flex-end;justify-content:center;padding:20px;overflow-y:auto;}
+.podium-ov.show{display:flex;flex-direction:column;}
+.podium-title{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:4px;color:var(--muted);text-align:center;margin:24px 0 8px;}
+.podium-main{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;color:var(--gold);text-align:center;margin-bottom:4px;animation:fadeIn 1s ease both;}
+.podium-sub{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted);text-align:center;margin-bottom:32px;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.podium-stage{display:flex;align-items:flex-end;justify-content:center;gap:8px;width:100%;max-width:400px;margin:0 auto 24px;}
+.podium-col{display:flex;flex-direction:column;align-items:center;flex:1;}
+.podium-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#fff;text-align:center;margin-bottom:6px;line-height:1.2;}
+.podium-prize{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--green);margin-bottom:6px;}
+.podium-block{width:100%;border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:28px;}
+.podium-block.p1{height:120px;background:linear-gradient(180deg,#ffd600,#ff8f00);animation:riseUp 0.8s ease 0.2s both;}
+.podium-block.p2{height:85px;background:linear-gradient(180deg,#b0bec5,#78909c);animation:riseUp 0.8s ease 0.4s both;}
+.podium-block.p3{height:60px;background:linear-gradient(180deg,#ff7043,#bf360c);animation:riseUp 0.8s ease 0.6s both;}
+@keyframes riseUp{from{transform:scaleY(0);transform-origin:bottom}to{transform:scaleY(1);transform-origin:bottom}}
+.podium-rest{width:100%;max-width:400px;margin:0 auto;}
+.podium-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);font-family:'Barlow Condensed',sans-serif;}
+.podium-rank{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted);min-width:30px;}
+.podium-pname{font-size:15px;font-weight:700;color:#fff;flex:1;}
+.podium-pprice{font-size:14px;color:var(--green);font-weight:700;}
+.podium-spoon{color:var(--red);}
+.podium-close{display:block;width:calc(100% - 40px);max-width:400px;margin:16px auto 32px;padding:14px;background:linear-gradient(135deg,var(--gold),#ff8f00);border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#000;cursor:pointer;}
+.form-badge{font-size:11px;margin-left:4px;vertical-align:middle;}
 .popup-ov{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;}
 .popup{background:var(--card);border:1px solid rgba(255,214,0,0.4);border-radius:16px;max-width:340px;width:100%;text-align:center;overflow:hidden;animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;}
 .popup-img{width:100%;height:auto;object-fit:contain;display:block;}
@@ -156,14 +169,13 @@ footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);font-fam
   </div>
 </div>
 
-<div class="winner-ov" id="winner-ov">
-  <div class="winner-box">
-    <div class="winner-emoji">🏆</div>
-    <div class="winner-sub">Sweepstake Winner</div>
-    <div class="winner-name" id="winner-name">-</div>
-    <div class="winner-prize" id="winner-prize">-</div>
-    <button class="winner-close" onclick="document.getElementById('winner-ov').classList.remove('show')">CLOSE</button>
-  </div>
+<div class="podium-ov" id="podium-ov">
+  <div class="podium-title">🏆 SWEEPSTAKE FINAL RESULTS</div>
+  <div class="podium-main" id="podium-winner-name">-</div>
+  <div class="podium-sub" id="podium-winner-prize">Wins the sweepstake!</div>
+  <div class="podium-stage" id="podium-stage"></div>
+  <div class="podium-rest" id="podium-rest"></div>
+  <button class="podium-close" onclick="document.getElementById('podium-ov').classList.remove('show')">CLOSE</button>
 </div>
 
 <div class="wrap">
@@ -195,7 +207,7 @@ const PM={1:1764000,2:1068200,3:676200,4:480200,5:401800,6:355250,7:330750,8:306
 const COLORS=["#00c853","#ffd600","#ff7043","#40c4ff","#ea80fc","#69f0ae","#ff6e40","#b388ff","#84ffff","#ccff90","#ff80ab","#ffd740","#80d8ff","#a7ffeb","#ffe57f","#ff9e80","#cfd8dc","#b2dfdb","#f8bbd0","#c5cae9"];
 const p2p={};
 Object.entries(PICKS).forEach(([p,pks])=>pks.forEach(n=>{const k=n.toLowerCase();if(!p2p[k])p2p[k]=[];p2p[k].push(p);}));
-let players=[],prevRanks={},curRanks={},history=[],tournDone=false,currentRoundNum=1,roundSnapshots=[];
+let players=[],prevRanks={},curRanks={},history=[],tournDone=false,currentRoundNum=1,roundSnapshots={},prevScores={};
 
 
 function show(id){
@@ -264,6 +276,23 @@ async function loadData(){
     prevRanks={...curRanks};
     players=json.map(r=>({pos:parseInt(r.pos)||999,posDisplay:r.posDisplay||String(r.pos),name:r.name,score:r.score||"E",thru:r.thru||"-",prize:0})).sort((a,b)=>a.pos-b.pos);
     calcPrizes(players);
+
+    // Calculate form badges based on score movement since last refresh
+    players.forEach(function(p){
+      const prev=prevScores[p.name];
+      if(prev!==undefined&&p.score!==prev&&p.score!=="E"&&prev!=="E"){
+        const curr=parseInt(p.score.replace("+",""))||0;
+        const old=parseInt(prev.replace("+",""))||0;
+        const diff=curr-old;
+        if(diff<=-2)p.form="hot";      // gained 2+ strokes — on fire
+        else if(diff<0)p.form="up";    // gained 1 stroke
+        else if(diff>=2)p.form="cold"; // lost 2+ strokes
+        else if(diff>0)p.form="down";  // lost 1 stroke
+        else p.form="";
+      } else { p.form=""; }
+      prevScores[p.name]=p.score;
+    });
+
     const res=calcRes();
     res.forEach((r,i)=>{curRanks[r.per]=i+1;});
     const now=new Date();
@@ -287,7 +316,7 @@ async function loadData(){
       }
     }
     const allDone=Object.values(PICKS).flat().every(n=>{const d=find(n);return !d||d.thru==="F";});
-    if(allDone&&players.length&&!tournDone){tournDone=true;showWinner(res[0]);}
+    if(allDone&&players.length&&!tournDone){tournDone=true;showPodium(res);}
     document.getElementById("stxt").textContent="Live · Updated "+label;
     document.getElementById("foot").textContent="Last updated: "+now.toLocaleString("en-GB")+" · Auto-refreshes every minute";
     render();
@@ -310,31 +339,34 @@ function render(){
 
 function renderSt(){
   const res=calcRes();
-  const top=res[0]?.tot||1;
+  const top=res[0]?res[0].tot||1:1;
   const mc=["gold","silver","bronze"];
   const me=["🥇","🥈","🥉"];
   let html='<button class="rbtn" onclick="loadData()">🔄 Refresh Scores</button>';
-  res.forEach((r,i)=>{
+  res.forEach(function(r,i){
     const gap=i>0?res[0].tot-r.tot:0;
     const gs=gap>0?"$"+gap.toLocaleString("en-GB")+" behind":"🔥 Leading";
     const pct=Math.round((r.tot/top)*100);
     const prev=prevRanks[r.per],curr=i+1;
-    let arr="";
+    var arr="";
     if(prev&&prev!==curr)arr=curr<prev?'<span class="arrow up">▲</span>':'<span class="arrow dn">▼</span>';
     else if(prev)arr='<span class="arrow" style="color:var(--muted)">–</span>';
-    const prs=r.dets.map(d=>{
+    var prs=r.dets.map(function(d){
       const isCut=d.found&&d.prize===0&&d.pos!=="?"&&d.pos!=="CUT";
       const pc=!d.found?"unk":(isCut?"cut":"");
-      return '<div class="prow"><div class="pleft"><span class="ppos '+pc+'">'+(d.pos)+'</span><span class="pname">'+(d.name)+'</span><span class="pscore '+(sc(d.score))+'">'+(d.score!=="-"?d.score:"")+'</span></div><span class="pprize '+(d.prize===0?"z":"")+'">'+(fmt(d.prize))+'</span></div>';
+      const pl=find(d.name);
+      const formMap={"hot":"🔥","up":"📈","cold":"❄️","down":"📉"};
+      const fb=pl&&pl.form&&formMap[pl.form]?formMap[pl.form]:"";
+      return '<div class="prow"><div class="pleft"><span class="ppos '+pc+'">'+d.pos+'</span><span class="pname">'+d.name+' '+fb+'</span><span class="pscore '+(sc(d.score))+'">'+( d.score!=="-"?d.score:"")+'</span></div><span class="pprize '+(d.prize===0?"z":"")+'">'+fmt(d.prize)+'</span></div>';
     }).join("");
-    html+='<div class="card '+(i===0?"r1":i===1?"r2":i===2?"r3":"")+'" id="c'+(i)+'">'+
-      '<div class="ctop" onclick="tog('+(i)+')">'+
-      '<div class="mring '+(i<3?mc[i]:"other")+'">'+(i<3?me[i]:i+1)+'</div>'+
-      '<div class="cinfo"><div class="cname">'+(r.per)+arr+'</div><div class="csub">'+(gs)+' · tap to see picks</div></div>'+
-      '<div class="ctotal"><div class="camount">'+(fmt(r.tot))+'</div><div class="clabel">projected</div></div>'+
-      '<span class="chev">▾</span></div>'+
-      '<div class="gbar"><div class="gfill" style="width:'+(pct)+'%"></div></div>'+
-      '<div class="prows">'+(prs)+'</div></div>';
+    html+='<div class="card '+(i===0?"r1":i===1?"r2":i===2?"r3":"")+'" id="c'+i+'">';
+    html+='<div class="ctop" onclick="tog('+i+')">';
+    html+='<div class="mring '+(i<3?mc[i]:"other")+'">'+(i<3?me[i]:i+1)+'</div>';
+    html+='<div class="cinfo"><div class="cname">'+r.per+arr+'</div><div class="csub">'+gs+' · tap to see picks</div></div>';
+    html+='<div class="ctotal"><div class="camount">'+fmt(r.tot)+'</div><div class="clabel">projected</div></div>';
+    html+='<span class="chev">▾</span></div>';
+    html+='<div class="gbar"><div class="gfill" style="width:'+pct+'%"></div></div>';
+    html+='<div class="prows">'+prs+'</div></div>';
   });
   document.getElementById("st").innerHTML=html;
 }
@@ -455,10 +487,38 @@ function renderH2H(){
 
 
 
-function showWinner(w){
-  document.getElementById("winner-name").textContent=w.per;
-  document.getElementById("winner-prize").textContent=fmt(w.tot)+" projected";
-  document.getElementById("winner-ov").classList.add("show");
+function showPodium(res){
+  document.getElementById("podium-winner-name").textContent=res[0].per;
+  document.getElementById("podium-winner-prize").textContent=fmt(res[0].tot)+" — Sweepstake Winner!";
+
+  // Build podium stage — 2nd, 1st, 3rd order for visual effect
+  const order=[{idx:1,cls:"p2",medal:"🥈"},{idx:0,cls:"p1",medal:"🥇"},{idx:2,cls:"p3",medal:"🥉"}];
+  let stage="";
+  order.forEach(function(o){
+    const r=res[o.idx];
+    if(!r)return;
+    stage+='<div class="podium-col">'+
+      '<div class="podium-name">'+r.per+'</div>'+
+      '<div class="podium-prize">'+fmt(r.tot)+'</div>'+
+      '<div class="podium-block '+o.cls+'">'+o.medal+'</div>'+
+    '</div>';
+  });
+  document.getElementById("podium-stage").innerHTML=stage;
+
+  // Remaining places
+  let rest="";
+  for(let i=3;i<res.length;i++){
+    const isLast=i===res.length-1;
+    rest+='<div class="podium-row">'+
+      '<span class="podium-rank'+(isLast?' podium-spoon':'')+'">'+
+        (isLast?'🥄':(i+1)+'th')+
+      '</span>'+
+      '<span class="podium-pname">'+res[i].per+'</span>'+
+      '<span class="podium-pprice">'+fmt(res[i].tot)+'</span>'+
+    '</div>';
+  }
+  document.getElementById("podium-rest").innerHTML=rest;
+  document.getElementById("podium-ov").classList.add("show");
 }
 function tog(i){document.getElementById("c"+i).classList.toggle("open");}
 
