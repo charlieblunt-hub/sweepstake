@@ -195,7 +195,7 @@ const PM={1:1764000,2:1068200,3:676200,4:480200,5:401800,6:355250,7:330750,8:306
 const COLORS=["#00c853","#ffd600","#ff7043","#40c4ff","#ea80fc","#69f0ae","#ff6e40","#b388ff","#84ffff","#ccff90","#ff80ab","#ffd740","#80d8ff","#a7ffeb","#ffe57f","#ff9e80","#cfd8dc","#b2dfdb","#f8bbd0","#c5cae9"];
 const p2p={};
 Object.entries(PICKS).forEach(([p,pks])=>pks.forEach(n=>{const k=n.toLowerCase();if(!p2p[k])p2p[k]=[];p2p[k].push(p);}));
-let players=[],prevRanks={},curRanks={},history=[],tournDone=false;
+let players=[],prevRanks={},curRanks={},history=[],tournDone=false,currentRoundNum=1,roundSnapshots=[];
 let chatMsgs=[];
 try{chatMsgs=JSON.parse(localStorage.getItem("swp_chat")||"[]");}catch(e){}
 
@@ -232,6 +232,30 @@ function calcRes(){
   }).sort((a,b)=>b.tot-a.tot);
 }
 
+function detectRound(){
+  // Detect round by checking score magnitudes
+  // R1 leader around -6 to -9, R2 around -12 to -18, R3 around -18-24, R4 similar
+  if(!players.length)return 0;
+  const leader=players[0];
+  if(!leader||!leader.score||leader.score==="E")return 1;
+  const s=parseInt(leader.score.replace("+",""))||0;
+  const abs=Math.abs(s);
+  if(abs<=12)return 1;
+  if(abs<=20)return 2;
+  if(abs<=28)return 3;
+  return 4;
+}
+
+function loadRoundSnapshots(){
+  roundSnapshots=[];
+  for(let r=1;r<=4;r++){
+    try{
+      const raw=localStorage.getItem("swp_snap_r"+r);
+      if(raw)roundSnapshots.push(JSON.parse(raw));
+    }catch(e){}
+  }
+}
+
 async function loadData(){
   try{
     const resp=await fetch(DATA_URL+"?t="+Date.now());
@@ -248,6 +272,21 @@ async function loadData(){
     const totals={};res.forEach(r=>{totals[r.per]=r.tot;});
     history.push({label,totals});
     if(history.length>40)history.shift();
+
+    // Check if all picked players finished this round — if so save round snapshot
+    const allPickedNames=Object.values(PICKS).flat();
+    const roundNum=detectRound();
+    if(roundNum>0){
+      const allFinished=allPickedNames.every(function(n){const d=find(n);return !d||d.thru==="F";});
+      if(allFinished){
+        const snapKey="swp_snap_r"+roundNum;
+        if(!localStorage.getItem(snapKey)){
+          const snap={round:roundNum,label:"R"+roundNum,totals:totals};
+          localStorage.setItem(snapKey,JSON.stringify(snap));
+          console.log("Saved round "+roundNum+" snapshot");
+        }
+      }
+    }
     const allDone=Object.values(PICKS).flat().every(n=>{const d=find(n);return !d||d.thru==="F";});
     if(allDone&&players.length&&!tournDone){tournDone=true;showWinner(res[0]);}
     document.getElementById("stxt").textContent="Live · Updated "+label;
@@ -341,7 +380,17 @@ function renderStats(){
     html+="</div>";
   }
   html+='<div class="panel"><div class="panel-title">📊 Round by Round</div>';
-  if(history.length<2){
+  // Build chart data from round snapshots + current
+  const chartData=[];
+  roundSnapshots.forEach(function(s){chartData.push(s);});
+  // Add current live snapshot if it differs from last saved round
+  const lastSnap=roundSnapshots.length?roundSnapshots[roundSnapshots.length-1]:null;
+  const currTotals={};res.forEach(function(r){currTotals[r.per]=r.tot;});
+  if(!lastSnap||JSON.stringify(lastSnap.totals)!==JSON.stringify(currTotals)){
+    chartData.push({label:"Live",totals:currTotals});
+  }
+
+  if(chartData.length<2){
     html+='<div style="text-align:center;padding:24px;font-size:12px;color:var(--muted);font-family:Barlow Condensed,sans-serif">Chart builds up as scores update throughout the tournament</div>';
   }else{
     const parts=Object.keys(PICKS);
@@ -350,20 +399,20 @@ function renderStats(){
     let minV=Infinity,maxV=0;
     history.forEach(h=>parts.forEach(p=>{const v=h.totals[p]||0;if(v<minV)minV=v;if(v>maxV)maxV=v;}));
     if(maxV===minV)maxV=minV+1;
-    const xStep=cW/(history.length-1||1);
+    const xStep=cW/(chartData.length-1||1);
     const yS=v=>pad.t+cH-(((v-minV)/(maxV-minV))*cH);
     let svg='<svg viewBox="0 0 '+(W)+" "+(H)+'" style="width:100%">';
     svg+='<text x="'+(pad.l-4)+'" y="'+(pad.t+8)+'" fill="#6b7a99" font-size="9" text-anchor="end">'+(fmt(maxV))+'</text>';
     svg+='<text x="'+(pad.l-4)+'" y="'+(pad.t+cH)+'" fill="#6b7a99" font-size="9" text-anchor="end">'+(fmt(minV))+'</text>';
     if(history.length>0){
-      svg+='<text x="'+(pad.l)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(history[0].label)+'</text>';
-      svg+='<text x="'+(pad.l+cW)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(history[history.length-1].label)+'</text>';
+      svg+='<text x="'+(pad.l)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(chartData[0].label)+'</text>';
+      svg+='<text x="'+(pad.l+cW)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(chartData[chartData.length-1].label)+'</text>';
     }
     parts.forEach((p,pi)=>{
       const color=COLORS[pi%COLORS.length];
       const pts=history.map((h,i)=>pad.l+i*xStep+","+yS(h.totals[p]||0)).join(" ");
       svg+='<polyline points="'+(pts)+'" fill="none" stroke="'+(color)+'" stroke-width="1.5" opacity="0.8"/>';
-      const lv=history[history.length-1].totals[p]||0;
+      const lv=chartData[chartData.length-1].totals[p]||0;
       svg+='<circle cx="'+(pad.l+cW)+'" cy="'+(yS(lv))+'" r="3" fill="'+(color)+'"/>';
     });
     svg+="</svg>";
@@ -448,6 +497,7 @@ function tog(i){document.getElementById("c"+i).classList.toggle("open");}
   else hint.innerHTML='📱 <strong style="color:#e8eaf0">Add to your home screen!</strong><br>Tap the <strong style="color:#e8eaf0">three dots menu</strong> then <strong style="color:#e8eaf0">"Add to Home Screen"</strong>';
 })();
 
+loadRoundSnapshots();
 loadData();
 setInterval(loadData,60000);
 </script>
