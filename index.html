@@ -101,10 +101,28 @@
     <div class="popup-body">
       <div class="popup-title">Welcome to The Masters Sweepstake 2026! 🏌️</div>
       <div class="popup-sub">Good luck everyone... you're going to need it</div>
+      <div id="install-hint" style="margin-bottom:14px;padding:10px 12px;background:rgba(255,255,255,0.05);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#a0aec0;line-height:1.6;text-align:left;"></div>
       <button class="popup-btn" onclick="document.getElementById('welcome-popup').style.display='none'">LET'S GO ⛳</button>
     </div>
   </div>
 </div>
+<script>
+(function(){
+  const hint = document.getElementById('install-hint');
+  const ua = navigator.userAgent;
+  const isIOS = /iphone|ipad|ipod/i.test(ua);
+  const isAndroid = /android/i.test(ua);
+  const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if(isInStandalone){ hint.style.display='none'; return; }
+  if(isIOS){
+    hint.innerHTML = '📱 <strong style="color:#e8eaf0">Add to your home screen!</strong><br>Tap the <strong style="color:#e8eaf0">Share button</strong> (box with arrow) at the bottom of Safari, then tap <strong style="color:#e8eaf0">"Add to Home Screen"</strong>';
+  } else if(isAndroid){
+    hint.innerHTML = '📱 <strong style="color:#e8eaf0">Add to your home screen!</strong><br>Tap the <strong style="color:#e8eaf0">three dots menu</strong> in Chrome, then tap <strong style="color:#e8eaf0">"Add to Home Screen"</strong>';
+  } else {
+    hint.style.display='none';
+  }
+})();
+</script>
 <div class="wrap">
   <header>
     <div class="tour-label">⛳ 2026 PGA Tour · TPC San Antonio</div>
