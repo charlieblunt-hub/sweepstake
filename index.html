@@ -265,21 +265,16 @@ function renderSt(){
 
 function renderLb(){
   if(!players.length)return;
-  const picked=players.filter(p=>p2p[p.name.toLowerCase()]);
-  const rest=players.filter(p=>!p2p[p.name.toLowerCase()]);
   let html=`<div class="lbwrap"><div class="lbhdr"><span style="text-align:center">Pos</span><span>Player</span><span style="text-align:center">Score</span><span style="text-align:center">Thru</span><span style="text-align:right">Prize</span></div>`;
-  html+=`<div class="seclbl">⭐ Your sweepstake players</div>`;
-  picked.forEach(p=>{html+=lbr(p,true);});
-  html+=`<div class="seclbl">Full field</div>`;
-  rest.slice(0,65).forEach(p=>{html+=lbr(p,false);});
+  players.forEach(p=>{html+=lbr(p);});
   html+=`</div>`;
   document.getElementById('lb').innerHTML=html;
 }
 
-function lbr(p,pk){
+function lbr(p){
   const own=p2p[p.name.toLowerCase()];
-  const pr=p.prize>0?fmt(p.prize):(p.pos>65?'CUT':'-');
-  return `<div class="lbrow ${pk?'pk':''}"><span class="lbpos">${p.posDisplay}</span><span class="lbname">${p.name}${pk&&own?`<div class="lbowner">${own}</div>`:''}</span><span class="lbsc ${sc(p.score)}">${p.score}</span><span class="lbth">${p.thru}</span><span class="lbpr ${p.prize===0?'z':''}">${pr}</span></div>`;
+  const pr=p.prize>0?fmt(p.prize):(p.pos>=999?'CUT':'-');
+  return `<div class="lbrow ${own?'pk':''}"><span class="lbpos">${p.posDisplay}</span><span class="lbname">${p.name}${own?`<div class="lbowner">${own}</div>`:''}</span><span class="lbsc ${sc(p.score)}">${p.score}</span><span class="lbth">${p.thru}</span><span class="lbpr ${p.prize===0?'z':''}">${pr}</span></div>`;
 }
 
 function tog(i){document.getElementById('c'+i).classList.toggle('open');}
