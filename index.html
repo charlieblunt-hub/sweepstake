@@ -256,6 +256,9 @@ async function loadData(){
   }catch(e){
     console.error(e);
     document.getElementById("st").innerHTML='<div class="err">⚠️ Could not load scores.<br><br><a href="#" onclick="loadData();return false;">Try again</a></div>';
+    document.getElementById("lb").innerHTML='<div class="err">Waiting for scores...</div>';
+    document.getElementById("stats").innerHTML='<div class="err">Waiting for scores...</div>';
+    document.getElementById("h2h").innerHTML='<div class="err">Waiting for scores...</div>';
     document.getElementById("stxt").textContent="Error loading data";
   }
 }
