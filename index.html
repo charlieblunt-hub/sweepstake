@@ -75,6 +75,16 @@
   .lbpr{text-align:right;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--green);font-weight:600;}
   .lbpr.z{color:var(--muted);}
   .seclbl{padding:8px 11px 5px;font-size:10px;font-family:'Barlow Condensed',sans-serif;letter-spacing:2px;color:var(--muted);text-transform:uppercase;background:var(--bg2);}
+
+  .popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .popup{background:var(--card);border:1px solid rgba(255,214,0,0.4);border-radius:16px;max-width:340px;width:100%;text-align:center;overflow:hidden;animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;}
+  @keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+  .popup-img{width:100%;height:auto;object-fit:contain;display:block;}
+  .popup-body{padding:20px;}
+  .popup-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--gold);line-height:1.1;margin-bottom:8px;}
+  .popup-sub{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted);margin-bottom:18px;letter-spacing:0.5px;}
+  .popup-btn{display:block;width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#ff8f00);border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#000;cursor:pointer;}
+  .popup-btn:active{transform:scale(0.97);}
   .loading{text-align:center;padding:50px 20px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:2px;font-size:13px;text-transform:uppercase;}
   .spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;}
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -84,6 +94,17 @@
 </style>
 </head>
 <body>
+
+<div class="popup-overlay" id="welcome-popup">
+  <div class="popup">
+    <img class="popup-img" src="https://i0.wp.com/www.denverpost.com/wp-content/uploads/2017/05/dbauyfcuiaa4s2n.jpg?w=620&crop=0%2C0px%2C100%2C9999px" alt="Tiger Woods" onerror="this.style.display='none'">
+    <div class="popup-body">
+      <div class="popup-title">Welcome to The Masters Sweepstake 2026! 🏌️</div>
+      <div class="popup-sub">Good luck everyone... you're going to need it</div>
+      <button class="popup-btn" onclick="document.getElementById('welcome-popup').style.display='none'">LET'S GO ⛳</button>
+    </div>
+  </div>
+</div>
 <div class="wrap">
   <header>
     <div class="tour-label">⛳ 2026 PGA Tour · TPC San Antonio</div>
