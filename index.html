@@ -151,7 +151,11 @@ const PICKS={
 const PM={1:1764000,2:1068200,3:676200,4:480200,5:401800,6:355250,7:330750,8:306250,9:286650,10:267050,11:247450,12:227850,13:208250,14:188650,15:178850,16:169050,17:159250,18:149450,19:139650,20:129850,21:120050,22:110250,23:102410,24:94570,25:86730,26:78890,27:75950,28:73010,29:70070,30:67130,31:64190,32:61250,33:58310,34:55860,35:53410,36:50960,37:48510,38:46550,39:44590,40:42630,41:40670,42:38710,43:36750,44:34790,45:32830,46:30870,47:28910,48:27342,49:25970,50:25186,51:24598,52:24010,53:23618,54:23226,55:23030,56:22834,57:22638,58:22442,59:22246,60:22050,61:21854,62:21658,63:21462,64:21266,65:21070};
 
 const p2p={};
-Object.entries(PICKS).forEach(([per,pks])=>pks.forEach(n=>{p2p[n.toLowerCase()]=per;}));
+Object.entries(PICKS).forEach(([per,pks])=>pks.forEach(n=>{
+  const key=n.toLowerCase();
+  if(!p2p[key])p2p[key]=[];
+  p2p[key].push(per);
+}));
 
 let players=[];
 
@@ -275,7 +279,7 @@ function renderSt(){
     const mrv=i<3?me[i]:(i+1);
 
     const prs=r.dets.map(d=>{
-      const isCut=d.found&&d.prize===0&&d.pos!=='?';
+      const isCut=d.found&&d.prize===0&&d.pos!=='?'&&d.pos!=='CUT';
       const pc=!d.found?'unk':(isCut?'cut':'');
       return `<div class="prow"><div class="pleft"><span class="ppos ${pc}">${d.pos}</span><span class="pname">${d.name}</span><span class="pscore ${sc(d.score)}">${d.score!=='-'?d.score:''}</span></div><span class="pprize ${d.prize===0?'z':''}">${fmt(d.prize)}</span></div>`;
     }).join('');
@@ -303,9 +307,10 @@ function renderLb(){
 }
 
 function lbr(p){
-  const own=p2p[p.name.toLowerCase()];
+  const owners=p2p[p.name.toLowerCase()];
   const pr=p.prize>0?fmt(p.prize):(p.pos>=999?'CUT':'-');
-  return `<div class="lbrow ${own?'pk':''}"><span class="lbpos">${p.posDisplay}</span><span class="lbname">${p.name}${own?`<div class="lbowner">${own}</div>`:''}</span><span class="lbsc ${sc(p.score)}">${p.score}</span><span class="lbth">${p.thru}</span><span class="lbpr ${p.prize===0?'z':''}">${pr}</span></div>`;
+  const ownerHtml=owners&&owners.length?`<div class="lbowner">${owners.join(', ')}</div>`:'';
+  return `<div class="lbrow ${owners?'pk':''}"><span class="lbpos">${p.posDisplay}</span><span class="lbname">${p.name}${ownerHtml}</span><span class="lbsc ${sc(p.score)}">${p.score}</span><span class="lbth">${p.thru}</span><span class="lbpr ${p.prize===0?'z':''}">${pr}</span></div>`;
 }
 
 function tog(i){document.getElementById('c'+i).classList.toggle('open');}
