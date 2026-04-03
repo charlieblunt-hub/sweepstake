@@ -1,6 +1,6 @@
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUfEX2OQArn_QYaSDpOnTa528zmvicVZqZ283QUnNaLfp7YTz3tyQ3IEHM9-vup5tP78Q-V7aaUQ5j/pub?gid=400672772&single=true&output=csv";
+
 exports.handler = async function(event, context) {
-  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUfEX2OQArn_QYaSDpOnTa528zmvicVZqZ283QUnNaLfp7YTz3tyQ3IEHM9-vup5tP78Q-V7aaUQ5j/pub?gid=400672772&single=true&output=csv";
-  
   try {
     const response = await fetch(SHEET_URL);
     if (!response.ok) throw new Error('Sheet fetch failed: ' + response.status);
@@ -32,7 +32,10 @@ exports.handler = async function(event, context) {
   } catch (e) {
     return {
       statusCode: 500,
-      headers: { 'Access-Control-Allow-Origin': '*' },
+      headers: { 
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-cache'
+      },
       body: JSON.stringify({ error: e.message })
     };
   }
