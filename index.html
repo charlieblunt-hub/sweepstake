@@ -405,14 +405,19 @@ function renderH2H(){
 function renderChat(){
   const names=Object.keys(PICKS);
   let html='<div class="chat-wrap"><div class="chat-msgs" id="chat-msgs">';
-  if(!chatMsgs.length)html+='<div class="chat-empty">No messages yet — be the first to talk trash! 🗑️</div>';
-  else chatMsgs.forEach(m=>{html+='<div class="chat-msg"><div class="chat-name">'+(m.name)+'</div><div class="chat-bubble">'+(m.text)+'</div><div class="chat-time">'+(m.time)+'</div></div>';});
-  html+='</div><div class="chat-form"><select class="chat-namesel" id="chat-name">'+(names.map(n=>'<option value="'+(n)+'">'+(n.split(" ")[0])+"</option>").join(""))+'</select><input class="chat-inp" id="chat-inp" placeholder="Talk trash..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()"><button class="chat-send" onclick="sendChat()">Send</button></div></div>';
+  if(!chatMsgs.length)html+='<div class="chat-empty">No messages yet — be the first to talk trash!</div>';
+  else chatMsgs.forEach(function(m){html+='<div class="chat-msg"><div class="chat-name">'+m.name+'</div><div class="chat-bubble">'+m.text+'</div><div class="chat-time">'+m.time+'</div></div>';});
+  html+='</div><div class="chat-form">';
+  html+='<select class="chat-namesel" id="chat-name">'+names.map(function(n){return '<option value="'+n+'">'+n.split(" ")[0]+'</option>';}).join('')+'</select>';
+  html+='<input class="chat-inp" id="chat-inp" placeholder="Talk trash..." maxlength="200">';
+  html+='<button class="chat-send" onclick="sendChat()">Send</button>';
+  html+='</div></div>';
   document.getElementById("chat").innerHTML=html;
   const msgs=document.getElementById("chat-msgs");
   if(msgs)msgs.scrollTop=msgs.scrollHeight;
+  const inp=document.getElementById("chat-inp");
+  if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter")sendChat();});
 }
-
 function sendChat(){
   const name=document.getElementById("chat-name")?.value;
   const text=document.getElementById("chat-inp")?.value?.trim();
