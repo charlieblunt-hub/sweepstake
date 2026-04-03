@@ -102,7 +102,7 @@
 <script>
 // ── REPLACE THIS URL WITH YOUR PUBLISHED GOOGLE SHEET CSV URL ──
 // Instructions: File > Share > Publish to web > Sheet: Leaderboard > CSV > Publish > Copy link
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUfEX2OQArn_QYaSDpOnTa528zmvicVZqZ283QUnNaLfp7YTz3tyQ3IEHM9-vup5tP78Q-V7aaUQ5j/pub?gid=400672772&single=true&output=csv";
+const DATA_URL = "https://script.google.com/macros/s/AKfycbz2uRDiYoPB7J_2UuAxePyf4WtNkJ_bloJlznjFAZXJ613bWaXaTj9a59tbY6RFVi4n/exec";
 
 const PICKS={
   "Joe Blunt":["Tommy Fleetwood","Tony Finau","Russell Henley","Jordan Spieth","Ludvig Aberg"],
@@ -175,18 +175,21 @@ function parseCSV(csv){
 }
 
 async function loadData(){
-  if(SHEET_CSV_URL==="PASTE_YOUR_SHEET_CSV_URL_HERE"){
-    showSetupMsg();
-    return;
-  }
   try{
-    // Route through CORS proxy — Google Sheets blocks direct browser requests
-    const csvUrl=SHEET_CSV_URL+(SHEET_CSV_URL.includes('?')?'&':'?')+'t='+Date.now();
-    const url='https://corsproxy.io/?'+encodeURIComponent(csvUrl);
+    const url=DATA_URL+'?t='+Date.now();
     const resp=await fetch(url);
     if(!resp.ok)throw new Error('HTTP '+resp.status);
-    const csv=await resp.text();
-    players=parseCSV(csv);
+    const json=await resp.json();
+    if(!json.length)throw new Error('No data');
+    players=json.map(r=>({
+      pos:parseInt(r.pos)||999,
+      posDisplay:r.posDisplay||String(r.pos),
+      name:r.name,
+      score:r.score||'E',
+      thru:r.thru||'-',
+      prize:0
+    })).sort((a,b)=>a.pos-b.pos);
+    calcPrizes(players);
     if(!players.length)throw new Error('No data');
     const now=new Date();
     document.getElementById('stxt').textContent='Live · Updated '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
