@@ -5,8 +5,13 @@ exports.handler = async function(event, context) {
     const response = await fetch(SHEET_URL);
     if (!response.ok) throw new Error('Sheet fetch failed: ' + response.status);
     const csv = await response.text();
-    
+
+    console.log('CSV length:', csv.length);
+    console.log('First 300 chars:', csv.substring(0, 300));
+
     const lines = csv.trim().split('\n');
+    console.log('Total lines:', lines.length);
+
     const rows = [];
     for (let i = 1; i < lines.length; i++) {
       const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
@@ -19,7 +24,9 @@ exports.handler = async function(event, context) {
         thru: cols[4] || '-'
       });
     }
-    
+
+    console.log('Rows parsed:', rows.length);
+
     return {
       statusCode: 200,
       headers: {
@@ -30,9 +37,10 @@ exports.handler = async function(event, context) {
       body: JSON.stringify(rows)
     };
   } catch (e) {
+    console.error('Error:', e.message);
     return {
       statusCode: 500,
-      headers: { 
+      headers: {
         'Access-Control-Allow-Origin': '*',
         'Cache-Control': 'no-cache'
       },
