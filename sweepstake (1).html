@@ -180,8 +180,9 @@ async function loadData(){
     return;
   }
   try{
-    // Add cache-bust param so browser doesn't serve stale data
-    const url=SHEET_CSV_URL+(SHEET_CSV_URL.includes('?')?'&':'?')+'t='+Date.now();
+    // Route through CORS proxy — Google Sheets blocks direct browser requests
+    const csvUrl=SHEET_CSV_URL+(SHEET_CSV_URL.includes('?')?'&':'?')+'t='+Date.now();
+    const url='https://corsproxy.io/?'+encodeURIComponent(csvUrl);
     const resp=await fetch(url);
     if(!resp.ok)throw new Error('HTTP '+resp.status);
     const csv=await resp.text();
