@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>⛳ Valero 2026 Sweepstake</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00e676;
+    --green-dark: #00c853;
+    --gold: #ffd600;
+    --silver: #b0bec5;
+    --bronze: #ff7043;
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --card: #161d2e;
+    --border: rgba(255,255,255,0.07);
+    --text: #e8eaf0;
+    --muted: #6b7a99;
+    --red: #ff4444;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,230,118,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0,100,255,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; padding: 0 0 40px; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(180deg, #0d1520 0%, var(--bg) 100%);
+    padding: 24px 20px 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+  }
+
+  .tournament-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 8vw, 42px);
+    letter-spacing: 2px;
+    line-height: 1;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  h1 span { color: var(--green); }
+
+  .purse-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,230,118,0.1);
+    border: 1px solid rgba(0,230,118,0.25);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.4; transform:scale(1.4); }
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 113px;
+    z-index: 99;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 12px 8px;
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+  }
+
+  /* ── SECTIONS ── */
+  .section { display: none; padding: 16px; }
+  .section.active { display: block; }
+
+  /* ── STANDINGS ── */
+  .standings-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: transform 0.15s;
+    animation: slideUp 0.4s ease both;
+  }
+
+  .standings-card:active { transform: scale(0.98); }
+
+  @keyframes slideUp {
+    from { opacity:0; transform: translateY(16px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  .standings-card:nth-child(1) { animation-delay: 0.05s; }
+  .standings-card:nth-child(2) { animation-delay: 0.1s; }
+  .standings-card:nth-child(3) { animation-delay: 0.15s; }
+  .standings-card:nth-child(4) { animation-delay: 0.2s; }
+  .standings-card:nth-child(5) { animation-delay: 0.25s; }
+
+  .standings-card.rank-1 {
+    border-color: rgba(255,214,0,0.4);
+    background: linear-gradient(135deg, #1a1600 0%, var(--card) 40%);
+  }
+  .standings-card.rank-2 {
+    border-color: rgba(176,190,197,0.3);
+  }
+  .standings-card.rank-3 {
+    border-color: rgba(255,112,67,0.3);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .rank-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1;
+    min-width: 32px;
+    text-align: center;
+  }
+
+  .rank-1 .rank-num { color: var(--gold); }
+  .rank-2 .rank-num { color: var(--silver); }
+  .rank-3 .rank-num { color: var(--bronze); }
+
+  .card-info { flex: 1; min-width: 0; }
+
+  .participant-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+  }
+
+  .rank-1 .participant-name { color: var(--gold); }
+
+  .card-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.5px;
+  }
+
+  .total-prize {
+    text-align: right;
+  }
+
+  .total-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--green);
+    line-height: 1;
+  }
+
+  .rank-1 .total-amount { color: var(--gold); font-size: 26px; }
+
+  .total-label {
+    font-size: 9px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 16px;
+    transition: transform 0.25s;
+    margin-left: 4px;
+  }
+
+  .standings-card.open .chevron { transform: rotate(180deg); }
+
+  /* ── PLAYER PILLS ── */
+  .card-players {
+    display: none;
+    padding: 0 16px 14px;
+    gap: 6px;
+    flex-direction: column;
+  }
+
+  .standings-card.open .card-players { display: flex; }
+
+  .player-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .player-left { display: flex; align-items: center; gap: 8px; flex:1; min-width:0; }
+
+  .pos-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    min-width: 30px;
+    text-align: center;
+    color: var(--green);
+  }
+
+  .pos-badge.cut { color: var(--red); font-size: 11px; font-family: 'Barlow Condensed', sans-serif; }
+  .pos-badge.unknown { color: var(--muted); }
+
+  .player-name {
+    font-size: 13px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #cdd5e0;
+  }
+
+  .player-score {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    white-space: nowrap;
+  }
+
+  .player-prize {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--green);
+    white-space: nowrap;
+  }
+
+  .player-prize.zero { color: var(--muted); }
+
+  /* ── LEADER CROWN ── */
+  .crown { font-size: 14px; margin-right: 2px; }
+
+  /* ── GAP BAR ── */
+  .gap-bar {
+    height: 3px;
+    background: var(--bg3);
+    border-radius: 0;
+    margin: 0 16px 12px;
+    overflow: hidden;
+  }
+
+  .gap-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--gold));
+    border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+
+  /* ── LEADERBOARD TAB ── */
+  .lb-header {
+    display: grid;
+    grid-template-columns: 42px 1fr 48px 48px 90px;
+    padding: 8px 12px;
+    font-size: 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lb-row {
+    display: grid;
+    grid-template-columns: 42px 1fr 48px 48px 90px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    align-items: center;
+    transition: background 0.15s;
+    animation: fadeIn 0.3s ease both;
+  }
+
+  .lb-row:hover { background: rgba(255,255,255,0.03); }
+  .lb-row.picked { background: rgba(0,230,118,0.05); }
+  .lb-row.picked:hover { background: rgba(0,230,118,0.08); }
+
+  @keyframes fadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+  }
+
+  .lb-pos {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .lb-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .lb-name .picked-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+
+  .lb-score {
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .lb-score.under { color: var(--green); }
+  .lb-score.over { color: var(--red); }
+  .lb-score.even { color: #fff; }
+
+  .lb-thru {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  .lb-prize {
+    text-align: right;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .lb-prize.zero { color: var(--muted); }
+
+  .lb-section-label {
+    padding: 10px 12px 6px;
+    font-size: 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    background: var(--bg2);
+  }
+
+  /* ── LOADING ── */
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 2px;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  .loading-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── ERROR ── */
+  .error-msg {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--red);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  /* ── REFRESH BTN ── */
+  .refresh-btn {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 0 16px 16px;
+    padding: 13px;
+    background: rgba(0,230,118,0.1);
+    border: 1px solid rgba(0,230,118,0.3);
+    border-radius: 10px;
+    color: var(--green);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .refresh-btn:active { background: rgba(0,230,118,0.2); transform: scale(0.98); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+
+  /* ── MEDAL RING ── */
+  .medal-ring {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .medal-ring.gold { background: rgba(255,214,0,0.15); border: 2px solid rgba(255,214,0,0.4); }
+  .medal-ring.silver { background: rgba(176,190,197,0.1); border: 2px solid rgba(176,190,197,0.3); }
+  .medal-ring.bronze { background: rgba(255,112,67,0.1); border: 2px solid rgba(255,112,67,0.3); }
+  .medal-ring.other { background: rgba(255,255,255,0.05); border: 2px solid var(--border); font-family: 'Bebas Neue'; font-size:14px; color:var(--muted); }
+
+  /* ── SCORE COLOUR ── */
+  .score-neg { color: var(--green); }
+  .score-pos { color: var(--red); }
+  .score-e   { color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="tournament-label">⛳ 2026 PGA Tour · San Antonio TX</div>
+    <h1>VALERO <span>SWEEPSTAKE</span></h1>
+    <div class="purse-badge">💰 $9,800,000 Purse</div>
+    <div class="status-bar">
+      <span class="status-dot"></span>
+      <span id="status-text">Loading live data...</span>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('standings')">🏆 Standings</div>
+    <div class="tab" onclick="showTab('leaderboard')">📊 Leaderboard</div>
+  </div>
+
+  <div id="standings" class="section active">
+    <div id="standings-content">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        Fetching live scores...
+      </div>
+    </div>
+  </div>
+
+  <div id="leaderboard" class="section">
+    <div id="leaderboard-content">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        Fetching leaderboard...
+      </div>
+    </div>
+  </div>
+
+  <footer id="footer">Data via ESPN · Auto-refreshes every 2 mins</footer>
+</div>
+
+<script>
+// ── SWEEPSTAKE PICKS ──────────────────────────────────────────
+const PICKS = {
+  "Joe Blunt":          ["Tommy Fleetwood", "Tony Finau", "Russell Henley", "Jordan Spieth", "Ludvig Aberg"],
+  "Stephen Mills":      ["Mark Hubbard", "Davis Thompson", "Will Zalatoris", "Brian Harman", "Rickie Fowler"],
+  "Andrew Docwra":      ["Robert MacIntyre", "Sam Ryder", "Andrew Putnam", "Nick Taylor", "Maverick McNealy"],
+  "Linden Grubb":       ["Steven Fisk", "JJ Spaun", "Denny McCarthy", "Doc Redman", "Adam Schenk"],
+  "Charlie Blunt":      ["Christiaan Lamprecht", "Kevin Streelman", "Sahith Theegala", "Taylor Moore", "Harris English"],
+  "Matt Harding-Smith": ["Wyndham Clark", "Sepp Straka", "Keith Mitchell", "Beau Hossler", "Dylan Wu"],
+  "Mario Zakakiotis":   ["Cameron Young", "Ben Griffin", "Austin Smotherman", "Patrick Rodgers", "Tom Hoge"],
+  "Dom Hunt":           ["Akshay Bhatia", "Ryan Brehm", "Luke Clanton", "Chris Gotterup", "Alex Smalley"],
+  "Tommy North":        ["Peter Malnati", "Justin Lower", "Michael Kim", "Scott Stallings", "James Hahn"],
+  "Max Maciver":        ["Aaron Rai", "Ben Taylor", "Brendon Todd", "Matt Kuchar", "Stephan Jaeger"]
+};
+
+const PRIZE_MONEY = {
+  1:1764000,2:1068200,3:676200,4:480200,5:401800,6:355250,7:330750,8:306250,9:286650,10:267050,
+  11:247450,12:227850,13:208250,14:188650,15:178850,16:169050,17:159250,18:149450,19:139650,20:129850,
+  21:120050,22:110250,23:102410,24:94570,25:86730,26:78890,27:75950,28:73010,29:70070,30:67130,
+  31:64190,32:61250,33:58310,34:55860,35:53410,36:50960,37:48510,38:46550,39:44590,40:42630,
+  41:40670,42:38710,43:36750,44:34790,45:32830,46:30870,47:28910,48:27342,49:25970,50:25186,
+  51:24598,52:24010,53:23618,54:23226,55:23030,56:22834,57:22638,58:22442,59:22246,60:22050,
+  61:21854,62:21658,63:21462,64:21266,65:21070
+};
+
+// Build reverse lookup
+const playerToPerson = {};
+Object.entries(PICKS).forEach(([person, players]) => {
+  players.forEach(p => { playerToPerson[p.toLowerCase()] = person; });
+});
+
+let allPlayers = [];
+let lastUpdated = null;
+
+// ── TAB SWITCHING ─────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['standings','leaderboard'][i] === name);
+  });
+  document.querySelectorAll('.section').forEach(s => {
+    s.classList.toggle('active', s.id === name);
+  });
+}
+
+// ── FETCH DATA ────────────────────────────────────────────────
+async function fetchData() {
+  try {
+    // Use a CORS proxy to get ESPN data from the browser
+    const espnUrl = 'https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?event=401811940';
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(espnUrl);
+    const resp = await fetch(proxyUrl);
+    if (!resp.ok) throw new Error('Network response not ok');
+    const data = await resp.json();
+    const competitors = data.events[0].competitions[0].competitors;
+
+    allPlayers = competitors.map(c => {
+      const posNum = parseInt(c.status?.position?.id || '999') || 999;
+      const posDisplay = c.status?.position?.displayName || '-';
+      const score = c.score || 'E';
+      const thru = c.status?.thru != null ? c.status.thru : (c.status?.displayValue || '-');
+      const prize = posNum <= 65 ? (PRIZE_MONEY[posNum] || 0) : 0;
+      return {
+        name: c.athlete.displayName,
+        pos: posNum,
+        posDisplay,
+        score,
+        thru: thru === 18 ? 'F' : thru,
+        prize
+      };
+    }).sort((a,b) => a.pos - b.pos);
+
+    lastUpdated = new Date();
+    renderAll();
+  } catch(e) {
+    console.error(e);
+    showError();
+  }
+}
+
+function findPlayer(name) {
+  const lower = name.toLowerCase();
+  let match = allPlayers.find(p => p.name.toLowerCase() === lower);
+  if (!match) {
+    const last = lower.split(' ').pop();
+    match = allPlayers.find(p => p.name.toLowerCase().endsWith(last));
+  }
+  return match || null;
+}
+
+function fmt(n) {
+  if (!n) return '$0';
+  return '$' + n.toLocaleString('en-GB');
+}
+
+function scoreClass(s) {
+  if (!s || s === 'E') return 'score-e';
+  if (String(s).startsWith('-')) return 'score-neg';
+  return 'score-pos';
+}
+
+// ── RENDER STANDINGS ──────────────────────────────────────────
+function renderStandings() {
+  const results = Object.entries(PICKS).map(([person, picks]) => {
+    let total = 0;
+    const details = picks.map(name => {
+      const d = findPlayer(name);
+      const prize = d ? d.prize : 0;
+      total += prize;
+      return { name, prize, pos: d ? d.posDisplay : '?', score: d ? d.score : '-', thru: d ? d.thru : '-', found: !!d };
+    });
+    return { person, details, total };
+  }).sort((a,b) => b.total - a.total);
+
+  const topTotal = results[0]?.total || 1;
+  const medals = ['🥇','🥈','🥉'];
+  const medalClass = ['gold','silver','bronze'];
+
+  let html = `<button class="refresh-btn" onclick="fetchData()">🔄 Refresh Now</button>`;
+
+  results.forEach((r, i) => {
+    const isTop3 = i < 3;
+    const medal = isTop3 ? medals[i] : (i+1);
+    const mClass = isTop3 ? medalClass[i] : 'other';
+    const pct = topTotal > 0 ? Math.round((r.total / topTotal) * 100) : 0;
+    const gap = i > 0 ? results[0].total - r.total : 0;
+    const gapStr = gap > 0 ? `$${gap.toLocaleString('en-GB')} behind` : 'LEADING 🔥';
+
+    const playerRows = r.details.map(d => {
+      const isCut = d.found && d.prize === 0 && d.pos === '-';
+      const posDisplay = !d.found ? '?' : (d.prize === 0 ? 'CUT' : d.pos);
+      const posClass = !d.found ? 'unknown' : (d.prize === 0 ? 'cut' : '');
+      return `
+        <div class="player-row">
+          <div class="player-left">
+            <span class="pos-badge ${posClass}">${posDisplay}</span>
+            <span class="player-name">${d.name}</span>
+            <span class="player-score ${scoreClass(d.score)}">${d.score !== '-' ? d.score : ''}</span>
+          </div>
+          <span class="player-prize ${d.prize === 0 ? 'zero' : ''}">${fmt(d.prize)}</span>
+        </div>`;
+    }).join('');
+
+    html += `
+      <div class="standings-card rank-${i+1}" id="card-${i}">
+        <div class="card-top" onclick="toggleCard(${i})">
+          <div class="medal-ring ${mClass}">${medal}</div>
+          <div class="card-info">
+            <div class="participant-name">${i===0?'<span class="crown">👑</span>':''}${r.person}</div>
+            <div class="card-sub">${gapStr} · tap to see picks</div>
+          </div>
+          <div class="total-prize">
+            <div class="total-amount">${fmt(r.total)}</div>
+            <div class="total-label">projected</div>
+          </div>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="gap-bar"><div class="gap-fill" style="width:${pct}%"></div></div>
+        <div class="card-players">${playerRows}</div>
+      </div>`;
+  });
+
+  document.getElementById('standings-content').innerHTML = html;
+}
+
+// ── RENDER LEADERBOARD ────────────────────────────────────────
+function renderLeaderboard() {
+  if (!allPlayers.length) return;
+
+  const picked = allPlayers.filter(p => playerToPerson[p.name.toLowerCase()]);
+  const rest = allPlayers.filter(p => !playerToPerson[p.name.toLowerCase()]);
+
+  let html = `
+    <div class="lb-header">
+      <span style="text-align:center">Pos</span>
+      <span>Player</span>
+      <span style="text-align:center">Score</span>
+      <span style="text-align:center">Thru</span>
+      <span style="text-align:right">Prize</span>
+    </div>`;
+
+  html += `<div class="lb-section-label">⭐ Your Sweepstake Players</div>`;
+  picked.forEach((p, i) => {
+    html += lbRow(p, true, i);
+  });
+
+  html += `<div class="lb-section-label">Full Field</div>`;
+  rest.slice(0, 60).forEach((p, i) => {
+    html += lbRow(p, false, i);
+  });
+
+  document.getElementById('leaderboard-content').innerHTML = html;
+}
+
+function lbRow(p, isPicked, i) {
+  const prizeStr = p.prize > 0 ? fmt(p.prize) : (p.pos > 65 ? 'CUT' : '-');
+  const prizeClass = p.prize === 0 ? 'zero' : '';
+  const owner = playerToPerson[p.name.toLowerCase()];
+  const nameExtra = isPicked ? `<span class="picked-dot"></span>` : '';
+  return `
+    <div class="lb-row ${isPicked ? 'picked' : ''}" style="animation-delay:${i*0.02}s">
+      <span class="lb-pos">${p.posDisplay}</span>
+      <span class="lb-name">${p.name}${nameExtra}${isPicked && owner ? `<br><span style="font-size:10px;color:var(--muted);font-weight:400">${owner}</span>` : ''}</span>
+      <span class="lb-score ${scoreClass(p.score)}">${p.score}</span>
+      <span class="lb-thru">${p.thru}</span>
+      <span class="lb-prize ${prizeClass}">${prizeStr}</span>
+    </div>`;
+}
+
+// ── TOGGLE CARD ───────────────────────────────────────────────
+function toggleCard(i) {
+  document.getElementById('card-' + i).classList.toggle('open');
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────
+function renderAll() {
+  renderStandings();
+  renderLeaderboard();
+  const t = lastUpdated ? lastUpdated.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}) : '-';
+  document.getElementById('status-text').textContent = `Live · Updated ${t}`;
+  document.getElementById('footer').textContent = `Data via ESPN · Last updated ${t} · Auto-refreshes every 2 mins`;
+}
+
+function showError() {
+  const msg = `<div class="error-msg">⚠️ Could not load live data.<br><br><button class="refresh-btn" onclick="fetchData()" style="margin:16px auto;display:block;width:200px">Try Again</button></div>`;
+  document.getElementById('standings-content').innerHTML = msg;
+  document.getElementById('status-text').textContent = 'Data unavailable — tap refresh';
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+fetchData();
+setInterval(fetchData, 120000); // refresh every 2 minutes
+</script>
+</body>
+</html>
