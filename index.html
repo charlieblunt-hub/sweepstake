@@ -474,11 +474,13 @@ function renderStats(){
     function yS(rank){return pad.t+((rank-1)/(n-1||1))*cH;}
     function getRanks(snap){
       const tots=parts.map(function(p){return snap.totals[p]||0;});
-      const sorted=[...tots].sort(function(a,b){return b-a;});
-      return tots.map(function(t){
-        var r=sorted.indexOf(t)+1;
-        return r;
+      // Create index array sorted by total descending
+      const indices=[...Array(parts.length).keys()].sort(function(a,b){return tots[b]-tots[a];});
+      const ranks=new Array(parts.length);
+      indices.forEach(function(idx,position){
+        ranks[idx]=position+1; // unique rank per position, no ties
       });
+      return ranks;
     }
     let svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;overflow:visible">';
     svg+='<text x="'+(pad.l-4)+'" y="'+(pad.t+5)+'" fill="#6b7a99" font-size="9" text-anchor="end">1st</text>';
