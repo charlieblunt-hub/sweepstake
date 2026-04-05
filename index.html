@@ -476,12 +476,19 @@ function renderStats(){
       svg+='<text x="'+(pad.l)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(chartData[0].label)+'</text>';
       svg+='<text x="'+(pad.l+cW)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(chartData[chartData.length-1].label)+'</text>';
     }
-    parts.forEach((p,pi)=>{
+    parts.forEach(function(p,pi){
       const color=COLORS[pi%COLORS.length];
-      const pts=history.map((h,i)=>pad.l+i*xStep+","+yS(h.totals[p]||0)).join(" ");
-      svg+='<polyline points="'+(pts)+'" fill="none" stroke="'+(color)+'" stroke-width="1.5" opacity="0.8"/>';
-      const lv=chartData[chartData.length-1].totals[p]||0;
-      svg+='<circle cx="'+(pad.l+cW)+'" cy="'+(yS(lv))+'" r="3" fill="'+(color)+'"/>';
+      if(chartData.length>=2){
+        const pts=chartData.map(function(h,i){
+          const x=pad.l+i*(cW/(chartData.length-1));
+          const y=yS(h.totals[p]||0);
+          return x+","+y;
+        }).join(" ");
+        svg+='<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linejoin="round" opacity="0.85"/>';
+      }
+      const last=chartData[chartData.length-1];
+      const lx=chartData.length>=2?pad.l+cW:pad.l+cW/2;
+      svg+='<circle cx="'+lx+'" cy="'+yS(last.totals[p]||0)+'" r="3" fill="'+color+'"/>';
     });
     svg+="</svg>";
     html+='<div style="overflow-x:auto">'+(svg)+"</div>";
