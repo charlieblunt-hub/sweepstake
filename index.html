@@ -86,9 +86,9 @@ h1 span{color:var(--green);}
 .stat-sub{font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;margin-top:2px;}
 .panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
 .panel-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
-.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
-.leg-item{display:flex;align-items:center;gap:4px;font-size:10px;font-family:'Barlow Condensed',sans-serif;color:var(--muted);}
-.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+
+
 .h2h-sel-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
 .h2h-sel{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;width:100%;cursor:pointer;}
 .h2h-sel:focus{outline:none;border-color:rgba(0,200,83,0.4);}
@@ -493,6 +493,24 @@ function renderStats(){
     });
     const finalRanks=getRanks(chartData[chartData.length-1]);
     const drawOrder=[...Array(n).keys()].sort(function(a,b){return finalRanks[b]-finalRanks[a];});
+    // Build label positions with collision avoidance
+    const labelPositions=[];
+    drawOrder.forEach(function(pi){
+      const finalRank=finalRanks[pi];
+      const ly=yS(finalRank);
+      labelPositions.push({pi,ly,finalRank});
+    });
+    // Sort by y position and spread overlapping labels
+    labelPositions.sort(function(a,b){return a.ly-b.ly;});
+    const minGap=11;
+    for(var i=1;i<labelPositions.length;i++){
+      if(labelPositions[i].ly-labelPositions[i-1].ly<minGap){
+        labelPositions[i].ly=labelPositions[i-1].ly+minGap;
+      }
+    }
+    const labelMap={};
+    labelPositions.forEach(function(lp){labelMap[lp.pi]=lp.ly;});
+
     drawOrder.forEach(function(pi){
       const color=COLORS[pi%COLORS.length];
       const finalRank=finalRanks[pi];
@@ -505,10 +523,14 @@ function renderStats(){
         svg+='<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="'+(isTop3?2.2:1.4)+'" stroke-linejoin="round" opacity="'+(isTop3?1:0.6)+'"/>';
       }
       const lx=pad.l+(chartData.length>=2?cW:0);
-      const ly=yS(finalRanks[pi]);
-      svg+='<circle cx="'+lx+'" cy="'+ly+'" r="'+(isTop3?4:2.5)+'" fill="'+color+'"/>';
+      const dotY=yS(finalRanks[pi]);
+      const labelY=labelMap[pi]||dotY;
+      svg+='<circle cx="'+lx+'" cy="'+dotY+'" r="'+(isTop3?4:2.5)+'" fill="'+color+'"/>';
+      if(Math.abs(labelY-dotY)>2){
+        svg+='<line x1="'+(lx+4)+'" y1="'+dotY+'" x2="'+(lx+5)+'" y2="'+labelY+'" stroke="'+color+'" stroke-width="0.8" opacity="0.4"/>';
+      }
       const fname=parts[pi].split(' ')[0];
-      svg+='<text x="'+(lx+6)+'" y="'+(ly+3)+'" fill="'+color+'" font-size="'+(isTop3?10:9)+'" font-weight="'+(isTop3?'bold':'normal')+'" opacity="'+(isTop3?1:0.85)+'">'+fname+'</text>';
+      svg+='<text x="'+(lx+8)+'" y="'+(labelY+3)+'" fill="'+color+'" font-size="'+(isTop3?10:9)+'" font-weight="'+(isTop3?'bold':'normal')+'" opacity="'+(isTop3?1:0.85)+'">'+fname+'</text>';
     });
     svg+='</svg>';
     html+='<div style="overflow-x:auto">'+(svg)+"</div>";
