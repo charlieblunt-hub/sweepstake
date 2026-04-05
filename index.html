@@ -461,7 +461,8 @@ function renderStats(){
   if(chartData.length<2){
     html+='<div style="text-align:center;padding:24px;font-size:12px;color:var(--muted);font-family:Barlow Condensed,sans-serif">Chart builds up as scores update throughout the tournament</div>';
   }else{
-    const parts=Object.keys(PICKS);
+    const pad={t:10,r:10,b:20,l:40};
+  const parts=Object.keys(PICKS);
     const n=parts.length;
     const LABEL_W=58;
     const W=300;
