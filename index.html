@@ -534,9 +534,7 @@ function renderStats(){
     });
     svg+='</svg>';
     html+='<div style="overflow-x:auto">'+(svg)+"</div>";
-    html+='<div class="legend">';
-    parts.forEach((p,pi)=>{html+='<div class="leg-item"><div class="leg-dot" style="background:'+(COLORS[pi%COLORS.length])+'"></div>'+(p.split(" ")[0])+"</div>";});
-    html+="</div>";
+    
   }
   html+="</div>";
   document.getElementById("stats").innerHTML=html;
