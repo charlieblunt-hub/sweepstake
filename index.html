@@ -462,35 +462,54 @@ function renderStats(){
     html+='<div style="text-align:center;padding:24px;font-size:12px;color:var(--muted);font-family:Barlow Condensed,sans-serif">Chart builds up as scores update throughout the tournament</div>';
   }else{
     const parts=Object.keys(PICKS);
-    const W=300,H=140,pad={t:10,r:10,b:20,l:50};
-    const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
-    let minV=Infinity,maxV=0;
-    history.forEach(h=>parts.forEach(p=>{const v=h.totals[p]||0;if(v<minV)minV=v;if(v>maxV)maxV=v;}));
-    if(maxV===minV)maxV=minV+1;
-    const xStep=cW/(chartData.length-1||1);
-    const yS=v=>pad.t+cH-(((v-minV)/(maxV-minV))*cH);
-    let svg='<svg viewBox="0 0 '+(W)+" "+(H)+'" style="width:100%">';
-    svg+='<text x="'+(pad.l-4)+'" y="'+(pad.t+8)+'" fill="#6b7a99" font-size="9" text-anchor="end">'+(fmt(maxV))+'</text>';
-    svg+='<text x="'+(pad.l-4)+'" y="'+(pad.t+cH)+'" fill="#6b7a99" font-size="9" text-anchor="end">'+(fmt(minV))+'</text>';
-    if(history.length>0){
-      svg+='<text x="'+(pad.l)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(chartData[0].label)+'</text>';
-      svg+='<text x="'+(pad.l+cW)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+(chartData[chartData.length-1].label)+'</text>';
+    const n=parts.length;
+    const LABEL_W=58;
+    const W=300;
+    const rowH=Math.max(12,Math.floor(240/n));
+    const cH=rowH*(n-1);
+    const H=cH+pad.t+pad.b;
+    const cW=W-pad.l-LABEL_W;
+    const xStep=cW/(chartData.length>1?chartData.length-1:1);
+    function yS(rank){return pad.t+((rank-1)/(n-1||1))*cH;}
+    function getRanks(snap){
+      const tots=parts.map(function(p){return snap.totals[p]||0;});
+      const sorted=[...tots].sort(function(a,b){return b-a;});
+      return tots.map(function(t){
+        var r=sorted.indexOf(t)+1;
+        return r;
+      });
     }
-    parts.forEach(function(p,pi){
-      const color=COLORS[pi%COLORS.length];
-      if(chartData.length>=2){
-        const pts=chartData.map(function(h,i){
-          const x=pad.l+i*(cW/(chartData.length-1));
-          const y=yS(h.totals[p]||0);
-          return x+","+y;
-        }).join(" ");
-        svg+='<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linejoin="round" opacity="0.85"/>';
-      }
-      const last=chartData[chartData.length-1];
-      const lx=chartData.length>=2?pad.l+cW:pad.l+cW/2;
-      svg+='<circle cx="'+lx+'" cy="'+yS(last.totals[p]||0)+'" r="3" fill="'+color+'"/>';
+    let svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;overflow:visible">';
+    svg+='<text x="'+(pad.l-4)+'" y="'+(pad.t+5)+'" fill="#6b7a99" font-size="9" text-anchor="end">1st</text>';
+    if(n>4)svg+='<text x="'+(pad.l-4)+'" y="'+(yS(Math.round(n/2))+4)+'" fill="#6b7a99" font-size="9" text-anchor="end">'+Math.round(n/2)+'th</text>';
+    svg+='<text x="'+(pad.l-4)+'" y="'+(pad.t+cH+4)+'" fill="#6b7a99" font-size="9" text-anchor="end">'+n+'th</text>';
+    if(chartData.length>0){
+      svg+='<text x="'+pad.l+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+chartData[0].label+'</text>';
+      if(chartData.length>1)svg+='<text x="'+(pad.l+cW)+'" y="'+(H-3)+'" fill="#6b7a99" font-size="9" text-anchor="middle">'+chartData[chartData.length-1].label+'</text>';
+    }
+    [1,Math.round(n/2),n].forEach(function(r){
+      svg+='<line x1="'+pad.l+'" y1="'+yS(r)+'" x2="'+(pad.l+cW)+'" y2="'+yS(r)+'" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>';
     });
-    svg+="</svg>";
+    const finalRanks=getRanks(chartData[chartData.length-1]);
+    const drawOrder=[...Array(n).keys()].sort(function(a,b){return finalRanks[b]-finalRanks[a];});
+    drawOrder.forEach(function(pi){
+      const color=COLORS[pi%COLORS.length];
+      const finalRank=finalRanks[pi];
+      const isTop3=finalRank<=3;
+      if(chartData.length>=2){
+        const pts=chartData.map(function(snap,i){
+          const ranks=getRanks(snap);
+          return (pad.l+i*xStep)+','+(yS(ranks[pi]));
+        }).join(' ');
+        svg+='<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="'+(isTop3?2.2:1.4)+'" stroke-linejoin="round" opacity="'+(isTop3?1:0.6)+'"/>';
+      }
+      const lx=pad.l+(chartData.length>=2?cW:0);
+      const ly=yS(finalRanks[pi]);
+      svg+='<circle cx="'+lx+'" cy="'+ly+'" r="'+(isTop3?4:2.5)+'" fill="'+color+'"/>';
+      const fname=parts[pi].split(' ')[0];
+      svg+='<text x="'+(lx+6)+'" y="'+(ly+3)+'" fill="'+color+'" font-size="'+(isTop3?10:9)+'" font-weight="'+(isTop3?'bold':'normal')+'" opacity="'+(isTop3?1:0.85)+'">'+fname+'</text>';
+    });
+    svg+='</svg>';
     html+='<div style="overflow-x:auto">'+(svg)+"</div>";
     html+='<div class="legend">';
     parts.forEach((p,pi)=>{html+='<div class="leg-item"><div class="leg-dot" style="background:'+(COLORS[pi%COLORS.length])+'"></div>'+(p.split(" ")[0])+"</div>";});
