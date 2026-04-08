@@ -6,26 +6,24 @@ exports.handler = async function(event, context) {
     if (!response.ok) throw new Error('Sheet fetch failed: ' + response.status);
     const csv = await response.text();
 
-    console.log('CSV length:', csv.length);
-    console.log('First 300 chars:', csv.substring(0, 300));
-
-    const lines = csv.trim().split('\n');
-    console.log('Total lines:', lines.length);
+    // Handle both \n and \r\n and double-space line endings from Google Sheets
+    const lines = csv.trim().split(/\r?\n|\r/);
 
     const rows = [];
     for (let i = 1; i < lines.length; i++) {
-      const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-      if (cols.length < 5 || !cols[2]) continue;
+      const line = lines[i].trim();
+      if (!line) continue;
+      const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+      if (cols.length < 3 || !cols[2]) continue;
+      const pos = parseInt(cols[0]) || 999;
       rows.push({
-        pos: parseInt(cols[0]) || 999,
-        posDisplay: cols[1] || String(parseInt(cols[0]) || 999),
+        pos,
+        posDisplay: cols[1] || String(pos),
         name: cols[2],
         score: cols[3] || 'E',
         thru: cols[4] || '-'
       });
     }
-
-    console.log('Rows parsed:', rows.length);
 
     return {
       statusCode: 200,
@@ -37,7 +35,6 @@ exports.handler = async function(event, context) {
       body: JSON.stringify(rows)
     };
   } catch (e) {
-    console.error('Error:', e.message);
     return {
       statusCode: 500,
       headers: {
