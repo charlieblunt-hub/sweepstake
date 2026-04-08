@@ -191,12 +191,56 @@ footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);font-fam
     <div class="tab" onclick="show('lb')">📊 Board</div>
     <div class="tab" onclick="show('stats')">📈 Stats</div>
     <div class="tab" onclick="show('h2h')">⚔️ H2H</div>
+    <div class="tab" onclick="show('prizes')">🏆 Prizes</div>
     
   </div>
   <div id="st" class="sec on"><div class="loading"><div class="spin"></div>Fetching scores...</div></div>
   <div id="lb" class="sec"><div class="loading"><div class="spin"></div>Loading...</div></div>
   <div id="stats" class="sec"><div class="loading"><div class="spin"></div>Loading...</div></div>
   <div id="h2h" class="sec"><div class="loading"><div class="spin"></div>Loading...</div></div>
+  <div id="prizes" class="sec">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:10px;">
+      <div style="padding:16px;border-bottom:1px solid var(--border);text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#fff;">Sweepstake Prizes</div>
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-top:2px;">TOP 3 TAKE HOME CASH</div>
+      </div>
+      <div style="padding:14px 16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(255,214,0,0.1);border:1px solid rgba(255,214,0,0.3);border-radius:10px;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:28px;">🥇</span>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--gold);">1st Place</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;">Winner</div>
+            </div>
+          </div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);">£210</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(176,190,197,0.08);border:1px solid rgba(176,190,197,0.2);border-radius:10px;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:28px;">🥈</span>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--silver);">2nd Place</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;">Runner Up</div>
+            </div>
+          </div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--silver);">£90</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(255,112,67,0.08);border:1px solid rgba(255,112,67,0.2);border-radius:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:28px;">🥉</span>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--bronze);">3rd Place</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;">Third Place</div>
+            </div>
+          </div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--bronze);">£30</div>
+        </div>
+        <div style="margin-top:14px;padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;text-align:center;font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;">
+          Total pot: £330 · Based on projected Masters winnings
+        </div>
+      </div>
+    </div>
+  </div>
   
   <footer id="foot">Auto-refreshes every minute</footer>
 </div>
@@ -247,7 +291,7 @@ let players=[],prevRanks={},curRanks={},history=[],tournDone=false,currentRoundN
 
 
 function show(id){
-  document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("on",["st","lb","stats","h2h","chat"][i]===id));
+  document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("on",["st","lb","stats","h2h","prizes"][i]===id));
   document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on",s.id===id));
   if(id==="h2h")renderH2H();
   
@@ -611,12 +655,18 @@ function showPodium(res){
   document.getElementById("podium-winner-name").textContent=res[0].per;
   document.getElementById("podium-winner-prize").textContent=fmt(res[0].tot)+" — Sweepstake Winner!";
 
+  const CASH=["£210","£90","£30"];
   const order=[{idx:1,cls:"p2",medal:"🥈"},{idx:0,cls:"p1",medal:"🥇"},{idx:2,cls:"p3",medal:"🥉"}];
   var stage="";
   order.forEach(function(o){
     const r=res[o.idx];
     if(!r)return;
-    stage+='<div class="podium-col"><div class="podium-name">'+r.per+'</div><div class="podium-prize">'+fmt(r.tot)+'</div><div class="podium-block '+o.cls+'">'+o.medal+'</div></div>';
+    stage+='<div class="podium-col">'+
+      '<div class="podium-name">'+r.per+'</div>'+
+      '<div class="podium-prize">'+fmt(r.tot)+'</div>'+
+      '<div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:#fff;margin-bottom:5px;">'+CASH[o.idx]+'</div>'+
+      '<div class="podium-block '+o.cls+'">'+o.medal+'</div>'+
+    '</div>';
   });
   document.getElementById("podium-stage").innerHTML=stage;
 
