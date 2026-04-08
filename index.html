@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>⛳ Valero 2026 Sweepstake</title>
+<title>⛳ Masters 2026 Sweepstake</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--green:#00c853;--gold:#ffd600;--silver:#b0bec5;--bronze:#ff7043;--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2235;--card:#161d2e;--border:rgba(255,255,255,0.07);--text:#e8eaf0;--muted:#6b7a99;--red:#ff4444;}
@@ -181,9 +181,9 @@ footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);font-fam
 
 <div class="wrap">
   <header>
-    <div class="tour-label">⛳ 2026 PGA Tour · TPC San Antonio</div>
-    <h1>VALERO <span>SWEEPSTAKE</span></h1>
-    <div class="purse">💰 $9,800,000 Purse</div>
+    <div class="tour-label">⛳ 2026 Masters Tournament · Augusta National</div>
+    <h1>MASTERS <span>SWEEPSTAKE</span></h1>
+    <div class="purse">💰 $21,000,000 Purse</div>
     <div class="stbar"><span class="dot"></span><span id="stxt">Loading...</span></div>
   </header>
   <div class="tabs">
@@ -204,8 +204,42 @@ footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);font-fam
 <script>
 const DATA_URL="/.netlify/functions/scores";
 const HISTORY_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQUfEX2OQArn_QYaSDpOnTa528zmvicVZqZ283QUnNaLfp7YTz3tyQ3IEHM9-vup5tP78Q-V7aaUQ5j/pub?gid=651734399&single=true&output=csv";
-const PICKS={"Joe Blunt":["Tommy Fleetwood","Tony Finau","Russell Henley","Jordan Spieth","Ludvig Aberg"],"Stephen Mills":["Mark Hubbard","Davis Thompson","Will Zalatoris","Brian Harman","Rickie Fowler"],"Andrew Docwra":["Robert MacIntyre","Sam Ryder","Andrew Putnam","Nick Taylor","Maverick McNealy"],"Linden Grubb":["Steven Fisk","JJ Spaun","Denny McCarthy","Doc Redman","Adam Schenk"],"Charlie Blunt":["Christiaan Lamprecht","Kevin Streelman","Sahith Theegala","Taylor Moore","Harris English"],"Matt Harding-Smith":["Wyndham Clark","Sepp Straka","Keith Mitchell","Beau Hossler","Dylan Wu"],"Mario Zakakiotis":["Cameron Young","Ben Griffin","Austin Smotherman","Patrick Rodgers","Tom Hoge"],"Dom Hunt":["Akshay Bhatia","Ryan Brehm","Luke Clanton","Chris Gotterup","Alex Smalley"],"Tommy North":["Peter Malnati","Justin Lower","Michael Kim","Scott Stallings","James Hahn"],"Max Maciver":["Aaron Rai","Ben Taylor","Brendon Todd","Matt Kuchar","Stephan Jaeger"],"Test Player 1":["Alex Smalley","Tommy Fleetwood","Mark Hubbard","Robert MacIntyre","Steven Fisk"],"Test Player 2":["Davis Thompson","Andrew Putnam","Will Zalatoris","Sam Ryder","Tony Finau"],"Test Player 3":["Christiaan Lamprecht","Jordan Spieth","Maverick McNealy","JJ Spaun","Cameron Young"],"Test Player 4":["Alex Smalley","Wyndham Clark","Sahith Theegala","Nick Taylor","Akshay Bhatia"],"Test Player 5":["Mark Hubbard","Steven Fisk","Ben Griffin","Sepp Straka","Tom Hoge"],"Test Player 6":["Robert MacIntyre","Tommy Fleetwood","Russell Henley","Davis Thompson","Austin Smotherman"],"Test Player 7":["Andrew Putnam","Kevin Streelman","Rickie Fowler","Chris Gotterup","Aaron Rai"],"Test Player 8":["Tony Finau","Sam Ryder","Ludvig Aberg","Denny McCarthy","Stephan Jaeger"],"Test Player 9":["Will Zalatoris","Alex Smalley","Brian Harman","Cameron Young","Keith Mitchell"],"Test Player 10":["Mark Hubbard","Robert MacIntyre","Tommy Fleetwood","Steven Fisk","Andrew Putnam"]};
-const PM={1:1764000,2:1068200,3:676200,4:480200,5:401800,6:355250,7:330750,8:306250,9:286650,10:267050,11:247450,12:227850,13:208250,14:188650,15:178850,16:169050,17:159250,18:149450,19:139650,20:129850,21:120050,22:110250,23:102410,24:94570,25:86730,26:78890,27:75950,28:73010,29:70070,30:67130,31:64190,32:61250,33:58310,34:55860,35:53410,36:50960,37:48510,38:46550,39:44590,40:42630,41:40670,42:38710,43:36750,44:34790,45:32830,46:30870,47:28910,48:27342,49:25970,50:25186,51:24598,52:24010,53:23618,54:23226,55:23030,56:22834,57:22638,58:22442,59:22246,60:22050,61:21854,62:21658,63:21462,64:21266,65:21070};
+const PICKS={
+  "Charlie Blunt":["Scottie Scheffler","Hideki Matsuyama","Shane Lowry","Corey Conners","Will Zalatoris"],
+  "Joe Blunt":["Rory McIlroy","Hideki Matsuyama","Shane Lowry","Nicolai Hojgaard","Will Zalatoris"],
+  "Linden Grubb":["Tommy Fleetwood","Justin Rose","Tyrrell Hatton","Marco Penge","Harry Hall"],
+  "Ben Vigneau-Singh":["Bryson Dechambeau","Viktor Hovland","Patrick Cantlay","J.J. Spaun","Will Zalatoris"],
+  "Max Maciver":["Tommy Fleetwood","Justin Rose","Tyrrell Hatton","Max Homa","Billy Horschel"],
+  "Stephen Mills":["Xander Schauffele","Justin Rose","Shane Lowry","Cameron Smith","Dustin Johnson"],
+  "Max Davidson":["Bryson Dechambeau","Justin Rose","Adam Scott","Sungjae Im","Will Zalatoris"],
+  "Andrew Cooper":["Scottie Scheffler","Justin Rose","Patrick Cantlay","Sungjae Im","Will Zalatoris"],
+  "Tommy North":["Rory McIlroy","Justin Rose","Shane Lowry","Jason Day","Aaron Rai"],
+  "Matt Harding-Smith":["Jon Rahm","Justin Rose","Chris Gotterup","Nicolai Hojgaard","Maverick McNealy"],
+  "Chris Hutt":["Scottie Scheffler","Brooks Koepka","Shane Lowry","Corey Conners","Will Zalatoris"],
+  "Luke Miles":["Scottie Scheffler","Justin Rose","Tyrrell Hatton","Sungjae Im","Will Zalatoris"],
+  "George Henson":["Bryson Dechambeau","Justin Rose","Sepp Straka","J.J. Spaun","Wyndham Clark"],
+  "Eoghan Mason":["Xander Schauffele","Justin Rose","Chris Gotterup","Corey Conners","Rasmus Neergaard-Petersen"],
+  "Harry Goodman":["Bryson Dechambeau","Jordan Spieth","Tyrrell Hatton","Sungjae Im","Aaron Rai"],
+  "Nicky Hutten-Czapski":["Scottie Scheffler","Min Woo Lee","Shane Lowry","Cameron Smith","Dustin Johnson"],
+  "Max Chillman":["Bryson Dechambeau","Robert MacIntyre","Sepp Straka","Jason Day","Will Zalatoris"],
+  "Chris Lippiatt":["Jon Rahm","Akshay Bhatia","Si Woo Kim","Cameron Smith","Will Zalatoris"],
+  "Aaron Li":["Bryson Dechambeau","Min Woo Lee","Shane Lowry","J.J. Spaun","Will Zalatoris"],
+  "Peter Traynor":["Rory McIlroy","Justin Rose","Russell Henley","J.J. Spaun","Harry Hall"],
+  "Richard Nichols":["Scottie Scheffler","Hideki Matsuyama","Patrick Cantlay","J.J. Spaun","Ben Griffin"],
+  "Alie Harvey":["Jon Rahm","Hideki Matsuyama","Patrick Cantlay","Jason Day","Maverick McNealy"],
+  "Luke Adams":["Matt Fitzpatrick","Justin Rose","Shane Lowry","J.J. Spaun","Will Zalatoris"],
+  "Matt Harris":["Ludvig Aberg","Justin Rose","Adam Scott","Max Homa","Ben Griffin"],
+  "Alex Maguire":["Xander Schauffele","Brooks Koepka","Chris Gotterup","Nicolai Hojgaard","Aldrich Potgieter"],
+  "Andy Docwra":["Bryson Dechambeau","Justin Rose","Chris Gotterup","J.J. Spaun","Alex Noren"],
+  "Ash":["Bryson Dechambeau","Justin Rose","Patrick Cantlay","Cameron Smith","Brian Harman"],
+  "Dom Hunt":["Scottie Scheffler","Justin Rose","Patrick Cantlay","Jason Day","Will Zalatoris"],
+  "Mario Zakakiotis":["Rory McIlroy","Justin Rose","Shane Lowry","Marco Penge","Danny Willett"],
+  "Jordan Lockyer":["Scottie Scheffler","Justin Rose","Shane Lowry","Marco Penge","Will Zalatoris"],
+  "Josh Murray":["Jon Rahm","Robert MacIntyre","Chris Gotterup","Cameron Smith","Maverick McNealy"],
+  "Dan Ward":["Xander Schauffele","Justin Rose","Chris Gotterup","Max Homa","Brian Harman"],
+  "Tom Webber":["Tommy Fleetwood","Brooks Koepka","Shane Lowry","Jason Day","Will Zalatoris"]
+};
+const PM={1:4200000,2:2268000,3:1428000,4:1008000,5:840000,6:756000,7:700000,8:644000,9:602700,10:560700,11:518700,12:476700,13:434700,14:392700,15:372450,16:352200,17:331950,18:311700,19:291450,20:271200,21:250950,22:230700,23:214200,24:197700,25:181200,26:164700,27:158550,28:152400,29:146250,30:140100,31:133950,32:127800,33:121650,34:116550,35:111450,36:106350,37:101250,38:97650,39:94050,40:90450,41:86850,42:83250,43:79650,44:76050,45:72450,46:68850,47:65250,48:62370,49:59850,50:58170};
 const COLORS=["#00c853","#ffd600","#ff7043","#40c4ff","#ea80fc","#69f0ae","#ff6e40","#b388ff","#84ffff","#ccff90","#ff80ab","#ffd740","#80d8ff","#a7ffeb","#ffe57f","#ff9e80","#cfd8dc","#b2dfdb","#f8bbd0","#c5cae9"];
 const p2p={};
 Object.entries(PICKS).forEach(([p,pks])=>pks.forEach(n=>{const k=n.toLowerCase();if(!p2p[k])p2p[k]=[];p2p[k].push(p);}));
