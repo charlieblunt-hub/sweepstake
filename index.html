@@ -409,8 +409,11 @@ async function loadData(){
         }
       }
     }
-    const allDone=Object.values(PICKS).flat().every(n=>{const d=find(n);return !d||d.thru==="F";});
-    if(allDone&&players.length&&!tournDone){tournDone=true;showPodium(res);}
+    // Only show podium when all picked players finished AND it's Sunday April 12th or later
+    const allFinished=Object.values(PICKS).flat().every(function(n){const d=find(n);return !d||d.thru==="F";});
+    const finalCheckDate=new Date("2026-04-12T18:00:00Z");
+    const isFinalDay=new Date()>=finalCheckDate;
+    if(allFinished&&isFinalDay&&players.length&&!tournDone){tournDone=true;showPodium(res);}
     document.getElementById("stxt").textContent="Live · Updated "+label;
     document.getElementById("foot").textContent="Last updated: "+now.toLocaleString("en-GB")+" · Auto-refreshes every minute";
     render();
