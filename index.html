@@ -183,7 +183,7 @@ footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);font-fam
   <header>
     <div class="tour-label">⛳ 2026 Masters Tournament · Augusta National</div>
     <h1>MASTERS <span>SWEEPSTAKE</span></h1>
-    <div class="purse">💰 $21,000,000 Purse</div>
+    <div class="purse">💰 $22,500,000 Purse</div>
     <div class="stbar"><span class="dot"></span><span id="stxt">Loading...</span></div>
   </header>
   <div class="tabs">
@@ -283,7 +283,7 @@ const PICKS={
   "Dan Ward":["Xander Schauffele","Justin Rose","Chris Gotterup","Max Homa","Brian Harman"],
   "Tom Webber":["Tommy Fleetwood","Brooks Koepka","Shane Lowry","Jason Day","Dustin Johnson"]
 };
-const PM={1:4200000,2:2268000,3:1428000,4:1008000,5:840000,6:756000,7:700000,8:644000,9:602700,10:560700,11:518700,12:476700,13:434700,14:392700,15:372450,16:352200,17:331950,18:311700,19:291450,20:271200,21:250950,22:230700,23:214200,24:197700,25:181200,26:164700,27:158550,28:152400,29:146250,30:140100,31:133950,32:127800,33:121650,34:116550,35:111450,36:106350,37:101250,38:97650,39:94050,40:90450,41:86850,42:83250,43:79650,44:76050,45:72450,46:68850,47:65250,48:62370,49:59850,50:58170};
+const PM={1:4500000,2:2430000,3:1530000,4:1080000,5:900000,6:810000,7:753750,8:697500,9:652500,10:607500,11:562500,12:517500,13:472500,14:427500,15:405000,16:382500,17:360000,18:337500,19:315000,20:292500,21:270000,22:252000,23:234000,24:216000,25:198000,26:180000,27:173250,28:166500,29:159750,30:153000,31:146250,32:139500,33:132750,34:127125,35:121500,36:115875,37:110250,38:105750,39:101250,40:96750,41:92250,42:87750,43:83250,44:78750,45:74250,46:69750,47:65250,48:61650,49:58500,50:56700};
 const COLORS=["#00c853","#ffd600","#ff7043","#40c4ff","#ea80fc","#69f0ae","#ff6e40","#b388ff","#84ffff","#ccff90","#ff80ab","#ffd740","#80d8ff","#a7ffeb","#ffe57f","#ff9e80","#cfd8dc","#b2dfdb","#f8bbd0","#c5cae9"];
 const p2p={};
 Object.entries(PICKS).forEach(([p,pks])=>pks.forEach(n=>{const k=n.toLowerCase();if(!p2p[k])p2p[k]=[];p2p[k].push(p);}));
@@ -310,7 +310,7 @@ function calcPrizes(pl){
   pl.forEach(p=>{if(p.pos>=999)return;if(!g[p.pos])g[p.pos]=[];g[p.pos].push(p);});
   Object.entries(g).forEach(([pos,grp])=>{
     pos=parseInt(pos);
-    if(pos>65){grp.forEach(p=>p.prize=0);return;}
+    if(pos>50){grp.forEach(p=>p.prize=0);return;} // Masters only pays top 50, missed cut = $0
     let tot=0;for(let i=0;i<grp.length;i++)tot+=PM[pos+i]||0;
     const avg=Math.round(tot/grp.length);grp.forEach(p=>p.prize=avg);
   });
