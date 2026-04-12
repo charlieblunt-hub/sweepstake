@@ -305,12 +305,34 @@ function find(name){
   if(!m){const last=lo.split(" ").pop();m=players.find(p=>p.name.toLowerCase().endsWith(last));}
   return m||null;
 }
+// Track which players have been seen in round 3+ to identify cut players
+const roundTracker={};
+function updateRoundTracker(pl){
+  pl.forEach(p=>{
+    if(!p.thru||p.thru==="-")return;
+    const existing=roundTracker[p.name.toLowerCase()]||{maxRound:0};
+    // If thru is F and score is very high (+4 or worse) they're likely cut
+    // Store the score to detect later
+    roundTracker[p.name.toLowerCase()]={score:p.score,thru:p.thru};
+  });
+}
+function isCutPlayer(p){
+  // Masters cut = top 50 and ties after R2
+  // If position is 51+ they missed the cut
+  if(p.pos>50&&p.pos<999)return true;
+  if(p.posDisplay&&(p.posDisplay.toUpperCase()==="CUT"||p.posDisplay.toUpperCase()==="WD"))return true;
+  return false;
+}
 function calcPrizes(pl){
   const g={};
-  pl.forEach(p=>{if(p.pos>=999)return;if(!g[p.pos])g[p.pos]=[];g[p.pos].push(p);});
+  pl.forEach(p=>{
+    if(isCutPlayer(p)){p.prize=0;return;}
+    if(p.pos>=999){p.prize=0;return;}
+    if(!g[p.pos])g[p.pos]=[];g[p.pos].push(p);
+  });
   Object.entries(g).forEach(([pos,grp])=>{
     pos=parseInt(pos);
-    if(pos>50){grp.forEach(p=>p.prize=0);return;} // Masters only pays top 50, missed cut = $0
+    if(pos>50){grp.forEach(p=>p.prize=0);return;}
     let tot=0;for(let i=0;i<grp.length;i++)tot+=PM[pos+i]||0;
     const avg=Math.round(tot/grp.length);grp.forEach(p=>p.prize=avg);
   });
