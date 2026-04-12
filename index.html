@@ -305,36 +305,47 @@ function find(name){
   if(!m){const last=lo.split(" ").pop();m=players.find(p=>p.name.toLowerCase().endsWith(last));}
   return m||null;
 }
-// Track which players have been seen in round 3+ to identify cut players
-const roundTracker={};
-function updateRoundTracker(pl){
-  pl.forEach(p=>{
-    if(!p.thru||p.thru==="-")return;
-    const existing=roundTracker[p.name.toLowerCase()]||{maxRound:0};
-    // If thru is F and score is very high (+4 or worse) they're likely cut
-    // Store the score to detect later
-    roundTracker[p.name.toLowerCase()]={score:p.score,thru:p.thru};
-  });
-}
-function isCutPlayer(p){
-  // Masters cut = top 50 and ties after R2
-  // If position is 51+ they missed the cut
-  if(p.pos>50&&p.pos<999)return true;
-  if(p.posDisplay&&(p.posDisplay.toUpperCase()==="CUT"||p.posDisplay.toUpperCase()==="WD"))return true;
-  return false;
-}
 function calcPrizes(pl){
-  const g={};
+  // First pass: mark cut players as pos 999
+  // Anyone with posDisplay=CUT/WD, or pos>=999 gets $0
+  // For the Masters, we also group by score to fix ties properly
   pl.forEach(p=>{
-    if(isCutPlayer(p)){p.prize=0;return;}
-    if(p.pos>=999){p.prize=0;return;}
-    if(!g[p.pos])g[p.pos]=[];g[p.pos].push(p);
+    if(p.posDisplay&&(p.posDisplay.toUpperCase()==="CUT"||p.posDisplay.toUpperCase()==="WD")){
+      p.pos=999;p.prize=0;
+    }
   });
-  Object.entries(g).forEach(([pos,grp])=>{
-    pos=parseInt(pos);
-    if(pos>50){grp.forEach(p=>p.prize=0);return;}
-    let tot=0;for(let i=0;i<grp.length;i++)tot+=PM[pos+i]||0;
-    const avg=Math.round(tot/grp.length);grp.forEach(p=>p.prize=avg);
+
+  // Group by SCORE not position to handle ties correctly
+  const scoreGroups={};
+  pl.forEach(p=>{
+    if(p.pos>=999){p.prize=0;return;}
+    const s=p.score||"E";
+    if(!scoreGroups[s])scoreGroups[s]=[];
+    scoreGroups[s].push(p);
+  });
+
+  // Sort score groups by score value (best first)
+  const sortedScores=Object.keys(scoreGroups).sort(function(a,b){
+    const va=a==="E"?0:parseInt(a.replace("+",""))||0;
+    const vb=b==="E"?0:parseInt(b.replace("+",""))||0;
+    return va-vb;
+  });
+
+  // Assign positions and average prize money across ties
+  let currentPos=1;
+  sortedScores.forEach(function(score){
+    const group=scoreGroups[score];
+    const count=group.length;
+    if(currentPos>50){group.forEach(p=>p.prize=0);currentPos+=count;return;}
+    // Average prize money for positions currentPos to currentPos+count-1
+    let tot=0;
+    for(let i=0;i<count;i++){
+      const p=currentPos+i;
+      if(p<=50)tot+=PM[p]||0;
+    }
+    const avg=count>0?Math.round(tot/count):0;
+    group.forEach(p=>{p.prize=avg;p.pos=currentPos;});
+    currentPos+=count;
   });
 }
 function calcRes(){
